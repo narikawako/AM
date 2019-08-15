@@ -1,0 +1,156 @@
+import React from 'react';
+import { connect } from 'react-redux';
+import { TouchableOpacity, View, TextInput, AsyncStorage, StyleSheet, StatusBar, Text } from 'react-native';
+import { login } from '../assets/DBAction';
+import { updateUserAction } from '../actions/RootAction';
+import { bindActionCreators } from 'redux';
+import _ from 'lodash';
+class Login extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { userName: "", password: "" };
+  }
+  static navigationOptions = ({ navigation }) => {
+    return {
+      header: null,
+    };
+  };
+  render() {
+    return (
+      <View style={styles.container}>
+        <StatusBar
+          hidden={true}
+        />
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>
+            {"LeySer Account Management"}
+          </Text>
+        </View>
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>運用者名：</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput style={styles.input} placeholder="運用者名" onChangeText={(text) => this.setState({ userName: text })} value={this.state.userName} />
+        </View>
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>パスワード：</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput style={styles.input} secureTextEntry={true} placeholder="パスワード" onChangeText={(text) => this.setState({ password: text })} value={this.state.password} />
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={this._signInAsync} style={styles.button}>
+            <Text style={styles.buttonText}>{" ログイン "}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+  _signInAsync = async () => {
+    //调用API验证身份
+    const data = {
+      LogonName: this.state.userName,
+      Password: this.state.password
+    }
+    let user = await login(data);
+    if (!_.isNil(user)) {
+      //成功的场合，更新State（非异步）
+      this.props.updateUserAction(user);
+      //保存User到本地（异步）
+      await AsyncStorage.setItem('APPAM_LoginFlag', user.id);
+      //全部结束之后，跳转页面
+      this.props.navigation.navigate('HomeStack');
+    }
+  };
+}
+const mapStateToProps = (state) => {
+  //这个组件不用订阅任何全局state数据
+  return {};
+}
+const mapDispatchToProps = (dispatch) => {
+  //这个组件需要更新全局state下的User信息
+  return bindActionCreators({ updateUserAction }, dispatch);
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
+
+const styles = StyleSheet.create(
+  {
+    textContainer: {
+      height: 30,
+      flexDirection: "column",
+      justifyContent: "flex-end",
+      alignItems: "stretch",
+    },
+    text: {
+      fontSize: 13,
+      color: '#555555',
+      marginLeft: 5,
+      marginRight: 5,
+      marginBottom: 2,
+    },
+    container: {
+      backgroundColor: '#f0f0f0',
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      alignItems: "stretch",
+      flex: 1,
+    },
+    header: {
+      height: 50,
+      backgroundColor: '#ffffff',
+      borderColor: '#a6a6a6',
+      borderWidth: 1,
+      flexDirection: 'row',
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    headerTitle: {
+      color: "#000000",
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
+    inputContainer: {
+      height: 50,
+      flexDirection: "column",
+      justifyContent: "flex-end",
+      alignItems: "stretch"
+    },
+    input: {
+      fontWeight: 'bold',
+      height: 50,
+      borderColor: '#a6a6a6',
+      borderWidth: 1,
+      borderRadius: 5,
+      backgroundColor: '#ffffff',
+      paddingRight: 10,
+      paddingLeft: 10,
+      paddingTop: 5,
+      paddingBottom: 5,
+      marginLeft: 5,
+      marginRight: 5,
+      fontSize: 16
+    },
+    buttonContainer: {
+      height: 60,
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "flex-end",
+      paddingRight: 5
+    },
+    button: {
+      width: 80,
+      height: 40,
+      backgroundColor: '#F47224',
+      borderWidth: 0,
+      borderRadius: 5,
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    buttonText: {
+      color: "#ffffff",
+      fontSize: 15,
+      fontWeight: 'bold'
+    },
+  }
+)
