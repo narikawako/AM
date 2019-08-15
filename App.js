@@ -1,13 +1,13 @@
 import React from 'react';
 //导航
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import  AppStack  from '../APPAM/navigations/AppStack';
-import  LoginStack  from '../APPAM/navigations/LoginStack';
-import  AuthSwitch  from '../APPAM/navigations/AnthSwitch';
+import  AppStack  from './navigations/AppStack';
+import  LoginStack  from './navigations/LoginStack';
+import  AuthSwitch  from './navigations/AnthSwitch';
 //数据流
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import reducer from '../APPAM/reducers/RootReducer';
+import reducer from './reducers/RootReducer';
 
 //导航处理：SwitchPage判定是否已经有登录情报，实施跳转
 const AppContainer = createAppContainer(
