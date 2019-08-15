@@ -18,7 +18,6 @@ export const updateUserAction = (user) => {
 //初次进入画面判定是否有List数据，没有的话，出进度条从DB获取数据，然后更新State中的List数据，重新加载页面
 //删除Account数据之后，从DB删除数据，然后更新State中的List数据，重新加载页面
 //用户退出之后，清除所有的State
-
 export const ACCOUNT_LOADLIST = 'ACCOUNT_LOADLIST'
 export const loadAccountListAction = (list) => {
     return {
@@ -43,7 +42,7 @@ export const userLogoutAction = () => {
 //--------AccountDetail—Basic页面：
 //初次进入画面判定是否有Detail数据，没有的话，出进度条从DB获取明细数据，然后更新State中的Detail数据，重新加载页面
 //后退离开这个画面的时候，要清空State中的Detail数据，清理现场，方便下次进入时是干净的。
-//前进离开这个画面的时候，要更新State中的Detail的Basic信息，实时存储最新的数据到State。
+//前进离开这个画面的时候，要更新State中的Detail的Basic信息和Plus信息，实时存储最新的数据到State。
 //detail:{basic:{},kaikei:[],shisan:[],kyuyo:[],jinji:[],gakuhi:[],plus:[]}
 export const ACCOUNT_LOADDETAIL = 'ACCOUNT_LOADDETAIL'
 export const loadAccountDetailAction = (detail) => {
@@ -52,15 +51,12 @@ export const loadAccountDetailAction = (detail) => {
         payload: detail
     }
 }
-
-
 export const ACCOUNT_CLEARDETAIL = 'ACCOUNT_CLEARDETAIL'
 export const clearAccountDetailAction = () => {
     return {
         type: ACCOUNT_CLEARDETAIL,
     }
 }
-
 export const ACCOUNT_UPDATEDETAILBASIC = 'ACCOUNT_UPDATEDETAILBASIC'
 export const updateAccountDetailBasicAction = (basic) => {
     return {
@@ -69,11 +65,9 @@ export const updateAccountDetailBasicAction = (basic) => {
     }
 }
 
-
 //--------AccountDetail—Product页面：
 //前进离开这个画面的时候，要更新State中的Detail的产品Service信息，实时存储最新的数据到State。
 //后退的时候不更新State。
-
 //productServices: {product:'kaikei/shisan/kyuyo/jinji/gakuhi/plus',services:[]}
 export const ACCOUNT_UPDATEDETAILSERVICE = 'ACCOUNT_UPDATEDETAILSERVICE'
 export const updateAccountDetailServiceAction = (productServices) => {
@@ -87,7 +81,6 @@ export const updateAccountDetailServiceAction = (productServices) => {
 //前进离开这个画面的时候，实时存储最新的数据到State。
 //利用state中的最新的信息保存到DB，更新State中的List信息，清空State中的Detail信息
 //后退的时候不更新State。
-
 export const ACCOUNT_ADDITEM = 'ACCOUNT_ADDITEM'
 export const addAccountItemAction = (item) => {
     return {
@@ -95,7 +88,6 @@ export const addAccountItemAction = (item) => {
         payload: item
     }
 }
-
 export const ACCOUNT_UPDATEITEM = 'ACCOUNT_UPDATEITEM'
 export const updateAccountItemAction = (item) => {
     return {

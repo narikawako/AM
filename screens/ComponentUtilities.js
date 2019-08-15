@@ -30,7 +30,7 @@ export class WizardHeader extends React.PureComponent {
 export class ServiceList extends React.Component {
   //这个组件没有做成纯组件，是因为订阅的this.props.services是一个数组
   //纯组件在Diff的时候，仅仅比较引用是否变化（浅比较）
-  //数组的操作很有可能会返回同一个引用，所以这里为了保险，不使用纯组件
+  //数组的操作很有可能会返回同一个引用，但是数据已经变了，所以这里为了保险，不使用纯组件
   render() {
     const servicesData = _.cloneDeep(this.props.FixedServices);
     _.forEach(servicesData, (item) => {

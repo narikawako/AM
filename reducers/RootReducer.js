@@ -26,14 +26,17 @@ const stateSchema = {
         license: '',
         demo: '',
         remark: '',
+        //这两个仅仅是辅助用的，标识用户选择了哪些本体服务和Plus服务
         products: [],
         plusproducts: []
     },
+    //本体分产品
     kaikei: [],
     shisan: [],
     kyuyo: [],
     jinji: [],
     gakuhi: [],
+    //Plus部分产品
     plus: []
 }
 
@@ -44,6 +47,7 @@ import { plusCommonServices, plusGakuhiServices, plusKaikeiServices, plusShisanS
 const replaceItem = (list, newItem) => {
     const index = _.findIndex(list, (item) => item.id === newItem.id);
     if (index >= 0) {
+        //把新元素放到旧元素的位置上
         return _.sortBy([...list.slice(0, index), newItem, ...list.slice(index + 1)], ['code']);
     }
     return list;
@@ -63,12 +67,31 @@ const computePlusServices = (list) => {
 }
 const appReducer = (state = {}, action) => {
     switch (action.type) {
+
+        //对user的操作（登录成功或者验证身份成功之后调用）
         case actionTypes.USER_UPDATE:
             return { ...state, user: action.payload };
+
+        //对List的操作（增删改查）
         case actionTypes.ACCOUNT_LOADLIST:
+            //一览画面加载数据
             return { ...state, list: _.sortBy(action.payload, ['code']) };
         case actionTypes.ACCOUNT_DELETEITEM:
+            //一览画面删除数据
             return { ...state, list: _.reject(state.list, (item) => item.id === action.payload) };
+        case actionTypes.ACCOUNT_ADDITEM:
+            //内容确认画面新规数据
+            return { ...state, list: _.sortBy(_.concat(state.list, action.payload), ['code']) };
+        case actionTypes.ACCOUNT_UPDATEITEM:
+            //内容确认画面编辑数据
+            return { ...state, list: replaceItem(state.list, action.payload) };
+
+        //更新账户的详细信息（Basic，Plus）  在基础画面上进入下一页的时候会调用
+        //Plus信息和基础信息已经确定了，之后都是对本体的修改
+        case actionTypes.ACCOUNT_UPDATEDETAILBASIC:
+            return { ...state, basic: action.payload, plus: computePlusServices(action.payload.plusproducts) };
+
+        //加载账户的详细信息（Basic，本体，Plus）编辑既有账户的时候，进入基本情报页面会调用
         case actionTypes.ACCOUNT_LOADDETAIL:
             return {
                 ...state,
@@ -80,6 +103,7 @@ const appReducer = (state = {}, action) => {
                 gakuhi: action.payload.gakuhi,
                 plus: action.payload.plus
             };
+        //清空账户的详细信息（Basic，本体，Plus）作成完了和更新完了，以及返回到一览画面的时候会调用
         case actionTypes.ACCOUNT_CLEARDETAIL:
             return {
                 ...state,
@@ -91,8 +115,7 @@ const appReducer = (state = {}, action) => {
                 gakuhi: null,
                 plus: null
             };
-        case actionTypes.ACCOUNT_UPDATEDETAILBASIC:
-            return { ...state, basic: action.payload, plus: computePlusServices(action.payload.plusproducts) };
+        //更新账户的详细信息（本体） 快捷做成和單個設定畫面會調用這個方法   
         case actionTypes.ACCOUNT_UPDATEDETAILSERVICE:
             switch (action.payload.product) {
                 case 'kaikei':
@@ -108,10 +131,7 @@ const appReducer = (state = {}, action) => {
                 default:
                     return state
             }
-        case actionTypes.ACCOUNT_ADDITEM:
-            return { ...state, list: _.sortBy(_.concat(state.list, action.payload), ['code']) };
-        case actionTypes.ACCOUNT_UPDATEITEM:
-            return { ...state, list: replaceItem(state.list, action.payload) };
+
         default:
             return state;
     }

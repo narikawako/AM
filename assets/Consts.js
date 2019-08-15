@@ -1,5 +1,6 @@
 import _ from "lodash";
 
+//本体服务
 export const kaikeiServices = [
     { id: 1, name: '	学校会計	' },
     { id: 2, name: '	幼稚園会計	' },
@@ -14,12 +15,10 @@ export const kaikeiServices = [
     { id: 504000, name: '	（OP）他校データ送付	' },
     { id: 504010, name: '	（OP）内部予算執行管理	' }
 ]
-
 export const shisanServices = [
     { id: 1001, name: '	資産管理	' },
     // { id: 1002, name: '	資産管理ライト	' }
 ]
-
 export const kyuyoServices = [
     { id: 120, name: '	学校給与	' },
     { id: 121, name: '	等級号俸	' },
@@ -30,16 +29,15 @@ export const kyuyoServices = [
     { id: 126, name: '	電子明細	' },
     { id: 509004, name: '	（OP）電子明細	' }
 ]
-
 export const jinjiServices = [
     { id: 3001, name: '	人事管理	' }
 ]
-
 export const gakuhiServices = [
     { id: 2001, name: '	学費管理	' },
     { id: 2002, name: '	預り金管理	' }
 ]
 
+//Plus服务
 export const plusCommonServices = [
     { id: 610000, name: '	LS+共通（Web）	' },
     { id: 610001, name: '	LS+キャビNet	' }
@@ -70,6 +68,7 @@ export const plusGakuhiServices = [
     { id: 661000, name: '	学費サイト	' }
 ]
 
+//服务全集
 export const fixServices = [
     { product: "kaikei", services: kaikeiServices },
     { product: "shisan", services: shisanServices },
@@ -81,6 +80,7 @@ export const fixServices = [
 export const ACCOUNTACTION_ADD = 'ACCOUNTACTION_ADD'
 export const ACCOUNTACTION_EDIT = 'ACCOUNTACTION_EDIT'
 
+//计算跳转到哪一页（根据current在products中的位置，判定前进到哪儿或者后退到哪儿）
 export const nextPage = (products, current, forwards) => {
     let currentIndex = _.indexOf(products, current)
     if (forwards === 0) {
@@ -96,6 +96,7 @@ export const nextPage = (products, current, forwards) => {
     }
 }
 
+//根据用户具有的服务判定是否具有某一个制品（例如，有部所Service的话，就表示签约了会计）
 export const hasService = (servicesids, keyservices) => {
     let hasData = false;
     _.forEach(_.map(keyservices, "id"), (id) => {
@@ -106,6 +107,7 @@ export const hasService = (servicesids, keyservices) => {
     return hasData;
 }
 
+//格式化日付到年月日
 export const formatDate = (date) => {
     let format = 'YYYY/MM/DD';
     format = format.replace('YYYY', date.getFullYear());

@@ -28,15 +28,15 @@ class AccountDetailBasic extends React.Component {
     let lastDay = new Date(dt.getFullYear(), dt.getMonth() + 3, 0);
 
     this.state = {
-      chosenDate: lastDay,
-      modalVisible: false,
+      chosenDate: lastDay, //方便取消日付编辑（ios）
+      modalVisible: false, //方便实施日付编辑（ios）
       isLoading: false,
+      oldname: '', //方便验证Account名是否重复
 
       //store里面的id不需要在这里调整，接下来的7个属性都和store里的属性一一匹配
       action: this.props.navigation.getParam('accountId') === -1 ? ACCOUNTACTION_ADD : ACCOUNTACTION_EDIT,
       code: '',
       name: '',
-      oldname: '',
       date: lastDay,
       license: '3',
       demo: true,
@@ -64,8 +64,8 @@ class AccountDetailBasic extends React.Component {
       header: null,
     };
   };
-  //---------------渲染---------------
 
+  //---------------渲染---------------
   render() {
     if (this.state.isLoading) {
       return (
@@ -74,10 +74,8 @@ class AccountDetailBasic extends React.Component {
         </View>
       )
     }
-    let saveContent = this.state.action === ACCOUNTACTION_ADD ? ' 新しいアカウントを作成する ' : ' アカウント情報を更新する ';
     return (
       <View style={styles.container}>
-
         <Modal
           animationType="slide"
           transparent={true}
@@ -104,7 +102,6 @@ class AccountDetailBasic extends React.Component {
             </View>
           </View>
         </Modal>
-
         <StatusBar
           hidden={true}
         />
@@ -293,7 +290,7 @@ class AccountDetailBasic extends React.Component {
         </ScrollView>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={this._onForwards2Summary} style={styles.button}>
-            <Text style={styles.buttonTextBig}>{saveContent}</Text>
+            <Text style={styles.buttonTextBig}>{this.state.action === ACCOUNTACTION_ADD ? ' 新しいアカウントを作成する ' : ' アカウント情報を更新する '}</Text>
             <Text style={styles.buttonTextSmall}>（　選択している製品のすべてのサービスで　）</Text>
           </TouchableOpacity>
         </View>
@@ -319,9 +316,9 @@ class AccountDetailBasic extends React.Component {
 
             code: detail.basic.code,
             name: detail.basic.name,
-            oldname: detail.basic.name,
+            oldname: detail.basic.name, //这是辅助用的
             date: new Date(detail.basic.date),
-            chosenDate: new Date(detail.basic.date),
+            chosenDate: new Date(detail.basic.date), //这是辅助用的
             remark: detail.basic.remark,
 
             //编辑的时候license和demo两个不需要显示
@@ -370,7 +367,7 @@ class AccountDetailBasic extends React.Component {
         code: this.props.basic.code,
         name: this.props.basic.name,
         date: new Date(this.props.basic.date),
-        chosenDate: new Date(this.props.basic.date),
+        chosenDate: new Date(this.props.basic.date),//这是辅助用的
         license: this.props.basic.license,
         demo: this.props.basic.demo,
         remark: this.props.basic.remark,
@@ -409,12 +406,13 @@ class AccountDetailBasic extends React.Component {
     }
     return validCode;
   }
+  //验证重名
   _validName = async (name) => {
     let checkResult = false;
     checkResult = await validateName(name);
     return checkResult;
   }
-
+  //选择日付
   _onselectDate = () => {
     if (Platform.OS === 'ios') {
       this._onselectDate4iOS();
@@ -423,12 +421,9 @@ class AccountDetailBasic extends React.Component {
     }
 
   }
-
   _onselectDate4iOS = () => {
     this.setState({ modalVisible: true });
   }
-
-  //安卓特殊的设置日期的方法
   _onselectDate4Android = async () => {
     const { action, year, month, day } = await DatePickerAndroid.open({
       date: this.state.date,
@@ -438,21 +433,18 @@ class AccountDetailBasic extends React.Component {
       this.setState({ date: returnDate, chosenDate: returnDate });
     }
   }
-
+  //导航
   _onBack = () => {
     //后退离开这个画面的时候，一定要先清理state，保证下次来的时候数据是干净的
     this.props.clearAccountDetailAction();
     this.props.navigation.navigate('list');
   };
-
   _onForwards2Detail = () => {
     this._onForwards(true);
   }
-
   _onForwards2Summary = () => {
     this._onForwards(false);
   }
-
   _onForwards = async (forwards2Detail) => {
 
     //必须入力项目的check
