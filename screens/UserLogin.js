@@ -47,9 +47,21 @@ class Login extends React.Component {
     );
   }
   _signInAsync = async () => {
+
+    let userName = _.trim(this.state.userName);
+    if (_.endsWith(userName, '@stage')) {
+      userName = _.replace(userName, '@stage', '');
+      await AsyncStorage.setItem('APPAM_ServerType', 'stage');
+    } else if (_.endsWith(userName, '@dev'))  {
+      userName = _.replace(userName, '@dev', '');
+      await AsyncStorage.setItem('APPAM_ServerType', 'dev');
+    } else {
+      await AsyncStorage.setItem('APPAM_ServerType', 'cloud');
+    }
+
     //调用API验证身份
     const data = {
-      LogonName: this.state.userName,
+      LogonName: userName,
       Password: this.state.password
     }
     let user = await login(data);

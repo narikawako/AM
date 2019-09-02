@@ -689,7 +689,7 @@ const styles = StyleSheet.create(
       width: 100,
     },
     serviceLabelContent: {
-      fontSize: 16,
+      fontSize: 15,
       fontWeight: 'bold',
       color: '#FFFFFF',
     },

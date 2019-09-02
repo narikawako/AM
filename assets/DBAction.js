@@ -1,28 +1,46 @@
-import { Alert } from 'react-native';
+import { Alert,AsyncStorage } from 'react-native';
 import _ from 'lodash';
 
-const ServerName = 'https://stage-leyser9.leyserplus.jp';
-const Path = '/WebAMAPI/MobileService/';
+const CloudServerAddress = 'https://www.leyserplus.jp';
+const CloudServerPath = '/WebAMAPI/MobileService/';
 
-const LoginAPI = ServerName + Path + 'Login';
-const GetUserAPI = ServerName + Path + 'GetUser';
-const LogoutAPI = ServerName + Path + 'Logout';
+const StageServerAddress = 'https://stage-leyser9.leyserplus.jp';
+const StageServerPath = '/WebAMAPI/MobileService/';
 
-const GetListAPI = ServerName + Path + 'GetAccountList';
-const GetDetailAPI = ServerName + Path + 'GetAccountDetail';
+const DevServerAddress ='http://xa-lsr-xfdev';
+const DevServerPath = '/AMAPI/MobileService/';
 
-const DeleteItemAPI = ServerName + Path + 'DeleteAccount';
-const AddItemAPI = ServerName + Path + 'CreateAccount';
-const UpdateItemAPI = ServerName + Path + 'UpdateAccount';
+const serverPath = async () => {
+    const serverType = await AsyncStorage.getItem('APPAM_ServerType');
+    switch (serverType) {
+        case 'stage':
+            return StageServerAddress + StageServerPath;
+        case 'cloud':
+            return CloudServerAddress + CloudServerPath;
+        default:
+            return DevServerAddress + DevServerPath;;
+    }
+}
 
-const ValidateCode = ServerName + Path + 'ValidateAccountCode';
-const ValidateName = ServerName + Path + 'ValidateAccountName';
+const LoginAPI = async () => { return await serverPath() + 'Login'; }
+const GetUserAPI = async () => { return await serverPath() + 'GetUser'; }
+const LogoutAPI = async () => { return await serverPath() + 'Logout'; }
+
+const GetListAPI = async () => { return await serverPath() + 'GetAccountList'; }
+const GetDetailAPI = async () => { return await serverPath() + 'GetAccountDetail'; }
+
+const DeleteItemAPI = async () => { return await serverPath() + 'DeleteAccount'; }
+const AddItemAPI = async () => { return await serverPath() + 'CreateAccount'; }
+const UpdateItemAPI = async () => { return await serverPath() + 'UpdateAccount'; }
+
+const ValidateCode = async () => { return await serverPath() + 'ValidateAccountCode'; }
+const ValidateName = async () => { return await serverPath() + 'ValidateAccountName'; }
 
 const Error_Title_Network = 'ネットワークエラー';
 const Error_Title_Server = 'サーバーエラー';
 
-export const login = (data) => {
-    return fetch(LoginAPI, {
+export const login = async (data) => {
+    return fetch(await LoginAPI(), {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8", },
         body: JSON.stringify(data),
@@ -49,8 +67,8 @@ export const login = (data) => {
 }
 
 //服务端暂不需要userId这个参数来获取当前用户，因为会通过cookies中记录的信息来获取当前用户
-export const getUser = (userId) => {
-    return fetch(GetUserAPI, {
+export const getUser = async (userId) => {
+    return fetch(await GetUserAPI(), {
         method: "GET",
         headers: { "Content-Type": "application/json; charset=utf-8", },
         credentials: "include"
@@ -75,8 +93,8 @@ export const getUser = (userId) => {
         });
 }
 
-export const logout = () => {
-    return fetch(LogoutAPI, {
+export const logout = async () => {
+    return fetch(await LogoutAPI(), {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8", },
         credentials: "include"
@@ -97,8 +115,8 @@ export const logout = () => {
 }
 
 //服务端暂不需要userId这个参数来获取当前用户的Account数据，因为会通过cookies中记录的信息来获取当前用户
-export const getList = (userId) => {
-    return fetch(GetListAPI, {
+export const getList = async (userId) => {
+    return fetch(await GetListAPI(), {
         method: "GET",
         headers: { "Content-Type": "application/json; charset=utf-8", },
         credentials: "include"
@@ -127,8 +145,8 @@ export const getList = (userId) => {
         });
 }
 
-export const getDetail = (id) => {
-    return fetch(GetDetailAPI + '?accountid=' + id, {
+export const getDetail = async (id) => {
+    return fetch(await GetDetailAPI() + '?accountid=' + id, {
         method: "GET",
         headers: { "Content-Type": "application/json; charset=utf-8", },
         credentials: "include"
@@ -162,8 +180,8 @@ export const getDetail = (id) => {
 }
 
 
-export const deleteItem = (id) => {
-    return fetch(DeleteItemAPI + '?accountid=' + id, {
+export const deleteItem = async (id) => {
+    return fetch(await DeleteItemAPI() + '?accountid=' + id, {
         method: "DELETE",
         headers: { "Content-Type": "application/json; charset=utf-8", },
         credentials: "include"
@@ -182,8 +200,8 @@ export const deleteItem = (id) => {
             return null;
         });
 }
-export const addItem = (data) => {
-    return fetch(AddItemAPI, {
+export const addItem = async (data) => {
+    return fetch(await AddItemAPI(), {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8", },
         body: JSON.stringify(data),
@@ -203,8 +221,8 @@ export const addItem = (data) => {
             return null;
         });
 }
-export const updateItem = (data) => {
-    return fetch(UpdateItemAPI, {
+export const updateItem = async (data) => {
+    return fetch(await UpdateItemAPI(), {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8", },
         body: JSON.stringify(data),
@@ -225,8 +243,8 @@ export const updateItem = (data) => {
         });
 }
 
-export const validateCode = (code) => {
-    return fetch(ValidateCode + '?code=' + code, {
+export const validateCode = async (code) => {
+    return fetch(await ValidateCode() + '?code=' + code, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8", },
         credentials: "include"
@@ -246,8 +264,8 @@ export const validateCode = (code) => {
         });
 }
 
-export const validateName = (name) => {
-    return fetch(ValidateName + '?name=' + name, {
+export const validateName = async (name) => {
+    return fetch(await ValidateName() + '?name=' + name, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8", },
         credentials: "include"
