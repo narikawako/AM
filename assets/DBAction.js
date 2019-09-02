@@ -1,7 +1,7 @@
 import { Alert,AsyncStorage } from 'react-native';
 import _ from 'lodash';
 
-const CloudServerAddress = 'https://www.leyserplus.jp';
+const CloudServerAddress = 'https://leyser9webam.grapecity.com';
 const CloudServerPath = '/WebAMAPI/MobileService/';
 
 const StageServerAddress = 'https://stage-leyser9.leyserplus.jp';
