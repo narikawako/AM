@@ -43,6 +43,13 @@ class Login extends React.Component {
             <Text style={styles.buttonText}>{" ログイン "}</Text>
           </TouchableOpacity>
         </View>
+        <View style={styles.footerContainer}>
+          <View style={styles.footer}>
+            <Text style={styles.footerTitle}>
+              {"Version: 1.0.1"}
+            </Text>
+          </View>
+        </View>
       </View>
     );
   }
@@ -52,7 +59,7 @@ class Login extends React.Component {
     if (_.endsWith(userName, '@stage')) {
       userName = _.replace(userName, '@stage', '');
       await AsyncStorage.setItem('APPAM_ServerType', 'stage');
-    } else if (_.endsWith(userName, '@dev'))  {
+    } else if (_.endsWith(userName, '@dev')) {
       userName = _.replace(userName, '@dev', '');
       await AsyncStorage.setItem('APPAM_ServerType', 'dev');
     } else {
@@ -164,5 +171,22 @@ const styles = StyleSheet.create(
       fontSize: 15,
       fontWeight: 'bold'
     },
+    footerContainer:{
+      flex: 1,
+      flexDirection: "column",
+      justifyContent: "flex-end",
+      alignItems: "center",
+    },
+    footer: {
+      height: 50,
+      borderWidth: 0,
+      flexDirection: 'row',
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    footerTitle:{
+      color: "#000000",
+      fontSize: 10,
+    }
   }
 )
