@@ -3,6 +3,7 @@ import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import  AppStack  from './navigations/AppStack';
 import  LoginStack  from './navigations/LoginStack';
+import  SignupStack  from './navigations/SignupStack';
 import  AuthSwitch  from './navigations/AnthSwitch';
 //数据流
 import { Provider } from 'react-redux';
@@ -16,6 +17,7 @@ const AppContainer = createAppContainer(
       SwitchPage: AuthSwitch,
       HomeStack: AppStack,
       AnthStack: LoginStack,
+      SignStack: SignupStack,
     },
     {
       initialRouteName: 'SwitchPage',
