@@ -23,14 +23,14 @@ class Login extends React.Component {
         />
         <View style={styles.header}>
           <Text style={styles.headerTitle}>
-            {"LeySer Account Management"}
+            {"担当者ログイン"}
           </Text>
         </View>
         <View style={styles.textContainer}>
-          <Text style={styles.text}>運用者名：</Text>
+          <Text style={styles.text}>担当者名：</Text>
         </View>
         <View style={styles.inputContainer}>
-          <TextInput style={styles.input} placeholder="運用者名" onChangeText={(text) => this.setState({ userName: text })} value={this.state.userName} />
+          <TextInput style={styles.input} placeholder="担当者名" onChangeText={(text) => this.setState({ userName: text })} value={this.state.userName} />
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.text}>パスワード：</Text>
