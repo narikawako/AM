@@ -99,7 +99,7 @@ export class BasicDisplayTable extends React.PureComponent {
           }
           {
             (this.props.basic.action === ACCOUNTACTION_ADD) &&
-            <View style={styles.leftCell}><Text>デモデータ</Text></View>
+            <View style={styles.leftCell}><Text>標準データ</Text></View>
           }
         </View>
         <View style={styles.rightContainer}>

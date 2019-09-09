@@ -166,7 +166,7 @@ class AccountDetailBasic extends React.Component {
           {
             this.state.action === ACCOUNTACTION_ADD &&
             <View style={styles.radioContainer}>
-              <Text style={styles.radioLabel}>デモデータを利用する。</Text>
+              <Text style={styles.radioLabel}>標準データを利用する。</Text>
               <Switch
                 onValueChange={(text) => this.setState({ demo: text })}
                 value={this.state.demo}
