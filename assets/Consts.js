@@ -2,40 +2,54 @@ import _ from "lodash";
 
 //本体服务
 export const kaikeiServices = [
-    { id: 1, name: '	学校会計	' },
-    { id: 2, name: '	幼稚園会計	' },
-    { id: 3, name: '	出納帳	' },
-    { id: 5, name: '	部所管理	' },
-    { id: 6, name: '	目的管理	' },
-    { id: 7, name: '	配分管理	' },
-    { id: 12, name: '	支払管理	' },
-    // { id: 13, name: '	税別経理	' },
-    { id: 16, name: '	電子預金	' },
-    { id: 17, name: '	財務分析	' },
-    { id: 504000, name: '	（OP）他校データ送付	' },
-    { id: 504010, name: '	（OP）内部予算執行管理	' }
+    { id: 1, name: 'ｽﾀﾝﾀﾞｰﾄﾞ' },
+    { id: 2, name: '幼稚園' },
+    //{ id: 3, name: '出納帳' },
+
+    { id: 17, name: '財務分析' },
+    { id: 7, name: '配分管理' },
+    { id: 12, name: '支払管理' },
+
+    { id: 5, name: '部所予算' },
+    { id: 6, name: '目的予算' },
+
+    { id: 504010, name: '予算執行' },
+    { id: 504000, name: '他校送付' }
+
+    //{ id: 13, name: '	税別経理	' },
+    //{ id: 16, name: '	電子預金	' },
+]
+
+export const kyuyoServices = [
+    { id: 120, name: 'ｽﾀﾝﾀﾞｰﾄﾞ' },
+
+    { id: 122, name: 'ﾍﾞｰｽｱｯﾌﾟ' },
+    { id: 121, name: '等級号俸' },
+    { id: 124, name: '退職金' },
+
+    { id: 123, name: '人件費ｼﾐｭﾚｰｼｮﾝ' },
+    { id: 125, name: '人事情報' },
+    { id: 509004, name: '電子明細' }
+
+    //{ id: 126, name: '	電子明細	' },
 ]
 export const shisanServices = [
-    { id: 1001, name: '	資産管理	' },
+    { id: 1001, name: 'ｽﾀﾝﾀﾞｰﾄﾞ' },
     // { id: 1002, name: '	資産管理ライト	' }
 ]
-export const kyuyoServices = [
-    { id: 120, name: '	学校給与	' },
-    { id: 121, name: '	等級号俸	' },
-    { id: 122, name: '	ベースアップ	' },
-    { id: 123, name: '	人件費シミュレーション	' },
-    { id: 124, name: '	退職金管理	' },
-    { id: 125, name: '	人事情報	' },
-    { id: 126, name: '	電子明細	' },
-    { id: 509004, name: '	（OP）電子明細	' }
+export const gakuhiServices = [
+    { id: 2001, name: 'ｽﾀﾝﾀﾞｰﾄﾞ' },
+    { id: 2002, name: '預り金' }
 ]
 export const jinjiServices = [
-    { id: 3001, name: '	人事管理	' }
+    { id: 3001, name: 'ｽﾀﾝﾀﾞｰﾄﾞ' }
 ]
-export const gakuhiServices = [
-    { id: 2001, name: '	学費管理	' },
-    { id: 2002, name: '	預り金管理	' }
+
+//默认是Off的那些Service
+export const defaultOffServices=[
+    2 //会计：幼稚園
 ]
+
 
 //Plus服务
 export const plusCommonServices = [

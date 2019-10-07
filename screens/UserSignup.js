@@ -5,6 +5,7 @@ import { login } from '../assets/DBAction';
 import { updateUserAction } from '../actions/RootAction';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 class Signup extends React.Component {
   constructor(props) {
     super(props);
@@ -17,9 +18,9 @@ class Signup extends React.Component {
   };
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
         <StatusBar
-          hidden={true}
+          backgroundColor="blue" barStyle="light-content"
         />
         <View style={styles.header}>
           <Text style={styles.headerTitle}>

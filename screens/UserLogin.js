@@ -5,6 +5,7 @@ import { login } from '../assets/DBAction';
 import { updateUserAction } from '../actions/RootAction';
 import { bindActionCreators } from 'redux';
 import _ from 'lodash';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 class Login extends React.Component {
   constructor(props) {
     super(props);
@@ -17,9 +18,9 @@ class Login extends React.Component {
   };
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
         <StatusBar
-          hidden={true}
+          backgroundColor="blue" barStyle="light-content"
         />
         <View style={styles.header}>
           <Text style={styles.headerTitle}>
@@ -39,8 +40,10 @@ class Login extends React.Component {
           <TextInput style={styles.input} secureTextEntry={true} placeholder="パスワード" onChangeText={(text) => this.setState({ password: text })} value={this.state.password} />
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => { this.props.navigation.navigate('SignStack') }} style={styles.buttonLink}>
+          {/* <TouchableOpacity onPress={() => { this.props.navigation.navigate('SignStack') }} style={styles.buttonLink}>
             <Text style={styles.buttonText}>{" 登録画面へ "}</Text>
+          </TouchableOpacity> */}
+          <TouchableOpacity>
           </TouchableOpacity>
           <TouchableOpacity onPress={this._signInAsync} style={styles.button}>
             <Text style={styles.buttonText}>{" ログイン "}</Text>

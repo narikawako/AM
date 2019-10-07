@@ -9,6 +9,12 @@ import {
   ACCOUNTACTION_EDIT,
   hasService,
   fixServices,
+  defaultOffServices,
+  kaikeiServices,
+  shisanServices,
+  kyuyoServices,
+  jinjiServices,
+  gakuhiServices,
   plusKaikeiServices,
   plusShisanServices,
   plusKyuyoServices,
@@ -19,6 +25,7 @@ import {
 import { WizardHeader } from './ComponentUtilities';
 import productStyles from './CommonStyles';
 import _ from "lodash";
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 class AccountDetailBasic extends React.Component {
   constructor(props) {
     super(props);
@@ -75,7 +82,7 @@ class AccountDetailBasic extends React.Component {
       )
     }
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
         <Modal
           animationType="slide"
           transparent={true}
@@ -103,7 +110,7 @@ class AccountDetailBasic extends React.Component {
           </View>
         </Modal>
         <StatusBar
-          hidden={true}
+          backgroundColor="blue" barStyle="light-content"
         />
         <WizardHeader
           title={'基本情報'}
@@ -207,26 +214,6 @@ class AccountDetailBasic extends React.Component {
               />
             </View>
           </View>
-          <View style={[styles.serviceContainer, productStyles.shisanColor]}>
-            <View style={styles.serviceLabel}>
-              <Text style={styles.serviceLabelContent} >資産システム</Text>
-            </View>
-            <View style={[styles.itemContainer]}>
-              <Text >本体</Text>
-              <Switch
-                onValueChange={(text) => this.setState({ shisan: text, plusshisan: text })}
-                value={this.state.shisan}
-              />
-            </View>
-            <View style={[styles.itemContainer]}>
-              <Text >ﾌﾟﾗｽ</Text>
-              <Switch
-                onValueChange={(text) => this.setState({ plusshisan: text })}
-                value={this.state.plusshisan}
-                disabled={this.state.shisan !== true}
-              />
-            </View>
-          </View>
           <View style={[styles.serviceContainer, productStyles.kyuyoColor]}>
             <View style={styles.serviceLabel}>
               <Text style={styles.serviceLabelContent} >給与システム</Text>
@@ -247,23 +234,23 @@ class AccountDetailBasic extends React.Component {
               />
             </View>
           </View>
-          <View style={[styles.serviceContainer, productStyles.jinjiColor]}>
+          <View style={[styles.serviceContainer, productStyles.shisanColor]}>
             <View style={styles.serviceLabel}>
-              <Text style={styles.serviceLabelContent} >人事システム</Text>
+              <Text style={styles.serviceLabelContent} >資産システム</Text>
             </View>
             <View style={[styles.itemContainer]}>
               <Text >本体</Text>
               <Switch
-                onValueChange={(text) => this.setState({ jinji: text, plusjinji: text })}
-                value={this.state.jinji}
+                onValueChange={(text) => this.setState({ shisan: text, plusshisan: text })}
+                value={this.state.shisan}
               />
             </View>
             <View style={[styles.itemContainer]}>
               <Text >ﾌﾟﾗｽ</Text>
               <Switch
-                onValueChange={(text) => this.setState({ plusjinji: text })}
-                value={this.state.plusjinji}
-                disabled={this.state.jinji !== true}
+                onValueChange={(text) => this.setState({ plusshisan: text })}
+                value={this.state.plusshisan}
+                disabled={this.state.shisan !== true}
               />
             </View>
           </View>
@@ -287,6 +274,27 @@ class AccountDetailBasic extends React.Component {
               />
             </View>
           </View>
+          <View style={[styles.serviceContainer, productStyles.jinjiColor]}>
+            <View style={styles.serviceLabel}>
+              <Text style={styles.serviceLabelContent} >人事システム</Text>
+            </View>
+            <View style={[styles.itemContainer]}>
+              <Text >本体</Text>
+              <Switch
+                onValueChange={(text) => this.setState({ jinji: text, plusjinji: text })}
+                value={this.state.jinji}
+              />
+            </View>
+            <View style={[styles.itemContainer]}>
+              <Text >ﾌﾟﾗｽ</Text>
+              <Switch
+                onValueChange={(text) => this.setState({ plusjinji: text })}
+                value={this.state.plusjinji}
+                disabled={this.state.jinji !== true}
+              />
+            </View>
+          </View>
+
         </ScrollView>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={this._onForwards2Summary} style={styles.button}>
@@ -309,6 +317,16 @@ class AccountDetailBasic extends React.Component {
         this.setState({ isLoading: true });
         const currentId = this.props.navigation.getParam('accountId');
         let detail = await getDetail(currentId);
+
+        //从DB获取的数据中Service数据可能比APP里能设置的要多，所以这里要以APP的Service为标准来调整一下。
+        //例如：万一通过WebAM添加了资产Lite这个服务，因为APP的Service全集中没有这个服务，所以可能会在后续处理中出错。
+        //即，在APP里面能调整的Service一定是APP能支持的那些Service，APP不支持的Service默认都不能契约。因为都是先删后加
+        detail.kaikei = _.intersection(detail.kaikei, _.map(kaikeiServices, 'id'));
+        detail.shisan = _.intersection(detail.shisan, _.map(shisanServices, 'id'));
+        detail.kyuyo = _.intersection(detail.kyuyo, _.map(kyuyoServices, 'id'));
+        detail.jinji = _.intersection(detail.jinji, _.map(jinjiServices, 'id'));
+        detail.gakuhi = _.intersection(detail.gakuhi, _.map(gakuhiServices, 'id'));
+
         if (!_.isNil(detail)) {
           //然后加载到画面上的state里
           this.setState({
@@ -495,10 +513,10 @@ class AccountDetailBasic extends React.Component {
     let products = [];
     //这个必须是有序的，因为后面会根据这个决定下一步到哪个画面
     if (this.state.kaikei) products.push("kaikei");
-    if (this.state.shisan) products.push("shisan");
     if (this.state.kyuyo) products.push("kyuyo");
-    if (this.state.jinji) products.push("jinji");
+    if (this.state.shisan) products.push("shisan");
     if (this.state.gakuhi) products.push("gakuhi");
+    if (this.state.jinji) products.push("jinji");
     basic.products = products;
 
     let plusproducts = [];
@@ -523,9 +541,10 @@ class AccountDetailBasic extends React.Component {
         this.props.navigation.navigate(products[0]);
       }
     } else {
-      //无论新规编辑，凡是通过快速创建按钮点击的，都是state的详细信息都是全Service
+      //无论新规编辑，凡是通过快速创建按钮点击的，都是state的详细信息都是全Service(默认Off的除外)
       _.forEach(products, (pro) => {
         let fixServiceData = _.map(_.find(fixServices, { 'product': pro }).services, 'id');
+        _.remove(fixServiceData, (id) => { return _.includes(defaultOffServices, id) })
         this.props.updateAccountDetailServiceAction({
           product: pro,
           services: fixServiceData

@@ -7,6 +7,7 @@ import { deleteItem, getList, logout, getUser } from '../assets/DBAction'
 import { WizardHeader } from './ComponentUtilities';
 import _ from 'lodash';
 import { formatDate } from '../assets/Consts';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 class AccountList extends React.Component {
   constructor(props) {
     super(props);
@@ -31,9 +32,9 @@ class AccountList extends React.Component {
     }
     if (!_.isNil(this.props.list) && _.isEmpty(this.props.list)) {
       return (
-        <View style={styles.container}>
+        <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
           <StatusBar
-            hidden={true}
+            backgroundColor="blue" barStyle="light-content"
           />
           <WizardHeader
             title={_.isNil(this.props.user) ? "" : this.props.user.name}
@@ -56,9 +57,9 @@ class AccountList extends React.Component {
       )
     }
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
         <StatusBar
-          hidden={true}
+          backgroundColor="blue" barStyle="light-content"
         />
         <WizardHeader
           title={_.isNil(this.props.user) ? "" : this.props.user.name}

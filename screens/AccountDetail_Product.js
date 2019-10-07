@@ -2,7 +2,8 @@ import React from 'react';
 import { ServiceList, WizardHeader } from './ComponentUtilities';
 import { View, StatusBar } from 'react-native';
 import _ from 'lodash';
-import { ACCOUNTACTION_ADD, nextPage } from '../assets/Consts';
+import { defaultOffServices, nextPage } from '../assets/Consts';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 //这是5个产品页面处理业务的核心组件，是共通的，产品仅仅需要将数据流绑定到这个组件即可
 export default class AccountDetailProduct extends React.Component {
   constructor(props) {
@@ -21,9 +22,9 @@ export default class AccountDetailProduct extends React.Component {
   };
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, paddingTop: getStatusBarHeight() }}>
         <StatusBar
-          hidden={true}
+          backgroundColor="blue" barStyle="light-content"
         />
         <WizardHeader
           title={this.props.ProductName}
@@ -67,11 +68,13 @@ export default class AccountDetailProduct extends React.Component {
       this.setState({ services: [], all: false });
     }
   }
-  //默认值是全选(前提是用户没有选择过service数据，如果选择过了，那么就以用户选择的为准)
-  //都已经进入这个画面了，但是Service又是空的，那就默认按照全部来设定吧
+  //默认值是全选,然后除去那些强制要Off的(前提是用户没有选择过service数据，如果选择过了，那么就以用户选择的为准)
+  //都已经进入这个画面了，但是Service又是空的，那就默认按照默认来设定吧
   componentDidMount() {
     if (_.isNil(this.state.services) || _.isEmpty(this.state.services)) {
-      this.setState({ services: _.map(this.props.FixedServices, 'id') });
+      let allFixedServices = _.map(this.props.FixedServices, 'id');
+      _.remove(allFixedServices, (id) => { return _.includes(defaultOffServices, id) })
+      this.setState({ services: allFixedServices });
     }
   }
 

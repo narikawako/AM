@@ -9,7 +9,7 @@ import { ACCOUNTACTION_ADD, kaikeiServices, shisanServices, kyuyoServices, jinji
 import { BasicDisplayTable, ServiceDisplayTable, WizardHeader, RemarkDisplayTable } from '../screens/ComponentUtilities';
 import productStyles from './CommonStyles';
 import { Timer } from './Timer';
-
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 const AllServices = _.concat(kaikeiServices, shisanServices, kyuyoServices, jinjiServices, gakuhiServices, plusCommonServices, plusKaikeiServices, plusShisanServices, plusKyuyoServices, plusJinjiServices, plusGakuhiServices);
 
 class AccountDetailSummary extends React.Component {
@@ -39,9 +39,9 @@ class AccountDetailSummary extends React.Component {
       saveContent = this.props.basic.action === ACCOUNTACTION_ADD ? '作成' : '更新';
     }
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 ,paddingTop: getStatusBarHeight()  }}>
         <StatusBar
-          hidden={true}
+          backgroundColor="blue" barStyle="light-content"
         />
         <WizardHeader
           title={'内容一覧'}
