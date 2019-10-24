@@ -20,7 +20,7 @@ class Login extends React.Component {
     return (
       <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
         <StatusBar
-          backgroundColor="blue" barStyle="light-content"
+          barStyle="default"
         />
         <View style={styles.header}>
           <Text style={styles.headerTitle}>
@@ -52,7 +52,7 @@ class Login extends React.Component {
         <View style={styles.footerContainer}>
           <View style={styles.footer}>
             <Text style={styles.footerTitle}>
-              {"Version: 1.0.3"}
+              {"Version: 1.0.4"}
             </Text>
           </View>
         </View>

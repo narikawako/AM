@@ -34,7 +34,7 @@ class AccountList extends React.Component {
       return (
         <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
           <StatusBar
-            backgroundColor="blue" barStyle="light-content"
+            barStyle="default"
           />
           <WizardHeader
             title={_.isNil(this.props.user) ? "" : this.props.user.name}
@@ -59,7 +59,7 @@ class AccountList extends React.Component {
     return (
       <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
         <StatusBar
-          backgroundColor="blue" barStyle="light-content"
+          barStyle="default"
         />
         <WizardHeader
           title={_.isNil(this.props.user) ? "" : this.props.user.name}

@@ -41,7 +41,7 @@ class AccountDetailSummary extends React.Component {
     return (
       <View style={{ flex: 1 ,paddingTop: getStatusBarHeight()  }}>
         <StatusBar
-          backgroundColor="blue" barStyle="light-content"
+          barStyle="default"
         />
         <WizardHeader
           title={'内容一覧'}

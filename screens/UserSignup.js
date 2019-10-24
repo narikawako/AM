@@ -20,7 +20,7 @@ class Signup extends React.Component {
     return (
       <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
         <StatusBar
-          backgroundColor="blue" barStyle="light-content"
+          barStyle="default"
         />
         <View style={styles.header}>
           <Text style={styles.headerTitle}>

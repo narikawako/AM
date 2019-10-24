@@ -110,7 +110,7 @@ class AccountDetailBasic extends React.Component {
           </View>
         </Modal>
         <StatusBar
-          backgroundColor="blue" barStyle="light-content"
+          barStyle="default"
         />
         <WizardHeader
           title={'基本情報'}
