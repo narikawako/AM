@@ -27,7 +27,8 @@
       "bundleIdentifier": "com.grapecity.leyser.am"
     },
     "android": {
-      "package": "com.grapecity.leyser.am"
+      "package": "com.grapecity.leyser.am",
+      "versionCode": 2
     }
   }
 }
