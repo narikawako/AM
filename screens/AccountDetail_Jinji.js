@@ -3,7 +3,7 @@ import { updateAccountDetailServiceAction } from '../actions/RootAction';
 import { bindActionCreators } from 'redux';
 import { jinjiServices, ACCOUNTACTION_ADD } from '../assets/Consts';
 import AccountDetailProduct from './AccountDetail_Product';
-import productStyles from './CommonStyles';
+import { productStyles } from './CommonStyles';
 import _ from 'lodash';
 const mapStateToProps = (state) => {
   return {

@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { addItem, updateItem } from '../assets/DBAction';
 import { ACCOUNTACTION_ADD, kaikeiServices, shisanServices, kyuyoServices, jinjiServices, gakuhiServices, plusCommonServices, plusKaikeiServices, plusShisanServices, plusKyuyoServices, plusJinjiServices, plusGakuhiServices } from '../assets/Consts';
 import { BasicDisplayTable, ServiceDisplayTable, WizardHeader, RemarkDisplayTable } from '../screens/ComponentUtilities';
-import productStyles from './CommonStyles';
+import { productStyles } from './CommonStyles';
 import { Timer } from './Timer';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 const AllServices = _.concat(kaikeiServices, shisanServices, kyuyoServices, jinjiServices, gakuhiServices, plusCommonServices, plusKaikeiServices, plusShisanServices, plusKyuyoServices, plusJinjiServices, plusGakuhiServices);

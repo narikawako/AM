@@ -23,7 +23,7 @@ import {
   formatDate
 } from '../assets/Consts';
 import { WizardHeader } from './ComponentUtilities';
-import productStyles from './CommonStyles';
+import { productStyles } from './CommonStyles';
 import _ from "lodash";
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 class AccountDetailBasic extends React.Component {
@@ -43,7 +43,7 @@ class AccountDetailBasic extends React.Component {
       //store里面的id不需要在这里调整，接下来的7个属性都和store里的属性一一匹配
       action: this.props.navigation.getParam('accountId') === -1 ? ACCOUNTACTION_ADD : ACCOUNTACTION_EDIT,
       code: '',
-      name: '',
+      name: '_デモ_',
       date: lastDay,
       license: '3',
       demo: true,
@@ -299,7 +299,7 @@ class AccountDetailBasic extends React.Component {
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={this._onForwards2Summary} style={styles.button}>
             <Text style={styles.buttonTextBig}>{this.state.action === ACCOUNTACTION_ADD ? ' 新しいアカウントを作成する ' : ' アカウント情報を更新する '}</Text>
-            <Text style={styles.buttonTextSmall}>（　選択している製品のすべてのサービスで　）</Text>
+            <Text style={styles.buttonTextSmall}>（　選択している製品のすべてのサービスより　）</Text>
           </TouchableOpacity>
         </View>
       </View>

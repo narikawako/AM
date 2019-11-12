@@ -46,7 +46,7 @@ export const jinjiServices = [
 ]
 
 //默认是Off的那些Service
-export const defaultOffServices=[
+export const defaultOffServices = [
     2 //会计：幼稚園
 ]
 
@@ -123,9 +123,11 @@ export const hasService = (servicesids, keyservices) => {
 
 //格式化日付到年月日
 export const formatDate = (date) => {
-    let format = 'YYYY/MM/DD';
-    format = format.replace('YYYY', date.getFullYear());
-    format = format.replace('MM', date.getMonth() + 1);
-    format = format.replace('DD', date.getDate());
-    return format;
+    let d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    let year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    return [year, month, day].join('/');
 }

@@ -8,6 +8,7 @@ import { WizardHeader } from './ComponentUtilities';
 import _ from 'lodash';
 import { formatDate } from '../assets/Consts';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { itemStyles } from './CommonStyles'
 class AccountList extends React.Component {
   constructor(props) {
     super(props);
@@ -175,28 +176,35 @@ class ListItem extends React.PureComponent {
     this.props.onEditItem(this.props.id);
   };
   render() {
+    let dt = new Date();
+    let deleteVisible = new Date(this.props.accountItem.date) <= dt;
+    let itemStyle =itemStyles.commonColor;
+    if (deleteVisible) itemStyle=itemStyles.deleteColor
     return (
-      <View style={styles.item}>
+      <View style={[styles.item, itemStyle]}>
         <TouchableOpacity onPress={this._onEditPress}>
-          <View style={styles.itemRow}>
-            <Text style={styles.code}>
+          <View style={[styles.itemRow, itemStyle]}>
+            <Text style={[styles.code, itemStyle]}>
               コード：{this.props.accountItem.code}
             </Text>
-            <Text style={styles.date}>
+            <Text style={[styles.date, itemStyle]}>
               利用期限：{formatDate(new Date(this.props.accountItem.date))}
             </Text>
           </View>
-          <View style={styles.itemRow}>
-            <View style={styles.nameContainer}>
-              <Text style={styles.name} numberOfLines={1}>
+          <View style={[styles.itemRow, itemStyle]}>
+            <View style={[styles.nameContainer, itemStyle]}>
+              <Text style={[styles.name, itemStyle]} numberOfLines={1}>
                 {this.props.accountItem.name}
               </Text>
             </View>
+            {
+            deleteVisible &&
             <View style={styles.buttonContainer}>
               <TouchableOpacity onPress={this._onDeletePress} style={styles.delete}>
                 <Text style={styles.deleteText}>削除</Text>
               </TouchableOpacity>
             </View>
+            }
           </View>
         </TouchableOpacity>
       </View>
@@ -217,11 +225,11 @@ const styles = StyleSheet.create(
       borderColor: '#a6a6a6',
       borderWidth: 1,
       borderRadius: 5,
-      backgroundColor: '#ffffff',
       marginTop: 5,
       marginBottom: 5,
       marginLeft: 5,
       marginRight: 5,
+      padding:1,
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "stretch",
@@ -235,6 +243,8 @@ const styles = StyleSheet.create(
       flexDirection: 'row',
       justifyContent: "space-between",
       alignItems: "flex-end",
+      borderWidth: 0,
+      borderRadius: 5,
     },
     code: {
       marginTop: 5,
@@ -249,7 +259,9 @@ const styles = StyleSheet.create(
       marginRight: 5,
     },
     nameContainer: {
-      flex: 1
+      flex: 1,
+      borderWidth: 0,
+      borderRadius: 5,
     },
     name: {
       marginTop: 5,
@@ -264,6 +276,7 @@ const styles = StyleSheet.create(
       marginBottom: 5,
       marginLeft: 5,
       marginRight: 5,
+
     },
     delete: {
       width: 70,
