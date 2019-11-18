@@ -59,7 +59,8 @@ export const plusCommonServices = [
 export const plusKaikeiServices = [
     { id: 504020, name: '	LS+会計	' },
     { id: 620000, name: '	LS+会計（Web）	' },
-    { id: 670000, name: '	LS+周辺会計（Web）	' }
+    { id: 670000, name: '	LS+周辺会計（Web）	' },
+    { id: 620001, name: '	LS+仕訳アーカイブ' }
 ]
 export const plusShisanServices = [
     { id: 511003, name: '	LS+資産	' },
