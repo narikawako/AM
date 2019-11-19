@@ -177,9 +177,15 @@ class ListItem extends React.PureComponent {
   };
   render() {
     let dt = new Date();
-    let deleteVisible = new Date(this.props.accountItem.date) <= dt;
-    let itemStyle =itemStyles.commonColor;
-    if (deleteVisible) itemStyle=itemStyles.deleteColor
+    let deleteVisible = false;
+    if ((this.props.accountItem.date === '') || (this.props.accountItem.date.toString() === 'Invalid Date')) {
+      //空表示永远不过期
+      deleteVisible = false;
+    } else {
+      deleteVisible = new Date(this.props.accountItem.date) <= dt;
+    }
+    let itemStyle = itemStyles.commonColor;
+    if (deleteVisible) itemStyle = itemStyles.deleteColor
     return (
       <View style={[styles.item, itemStyle]}>
         <TouchableOpacity onPress={this._onEditPress}>
@@ -198,12 +204,12 @@ class ListItem extends React.PureComponent {
               </Text>
             </View>
             {
-            deleteVisible &&
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity onPress={this._onDeletePress} style={styles.delete}>
-                <Text style={styles.deleteText}>削除</Text>
-              </TouchableOpacity>
-            </View>
+              deleteVisible &&
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={this._onDeletePress} style={styles.delete}>
+                  <Text style={styles.deleteText}>削除</Text>
+                </TouchableOpacity>
+              </View>
             }
           </View>
         </TouchableOpacity>
@@ -229,7 +235,7 @@ const styles = StyleSheet.create(
       marginBottom: 5,
       marginLeft: 5,
       marginRight: 5,
-      padding:1,
+      padding: 1,
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "stretch",

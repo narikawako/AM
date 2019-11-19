@@ -124,6 +124,7 @@ export const hasService = (servicesids, keyservices) => {
 
 //格式化日付到年月日
 export const formatDate = (date) => {
+    if ((date === '') || (date.toString() === 'Invalid Date')) return '';
     let d = new Date(date);
     let month = '' + (d.getMonth() + 1);
     let day = '' + d.getDate();

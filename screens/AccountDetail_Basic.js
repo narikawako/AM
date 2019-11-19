@@ -81,6 +81,16 @@ class AccountDetailBasic extends React.Component {
         </View>
       )
     }
+    //日期选择Popup画面上展示的永远是用户操作后的数据，所以这里只能使用choasenDate，不能使用Date
+    //而且，一旦用户切换日付，就需要更新到choasenDate里
+    //确定按钮：choasenDate 更新到 Date
+    //返回按钮：Date 更新到 choasenDate
+    let initialDate;
+    if (this.state.chosenDate === '' || this.state.chosenDate.toString() === 'Invalid Date') {
+      initialDate = new Date();
+    } else {
+      initialDate = this.state.chosenDate;
+    }
     return (
       <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
         <Modal
@@ -92,7 +102,7 @@ class AccountDetailBasic extends React.Component {
             <View style={styles.popupContainer}>
               <View style={styles.datePickerContainer}>
                 <DatePickerIOS
-                  date={this.state.chosenDate}
+                  date={initialDate}
                   mode="date"
                   locale="ja"
                   onDateChange={(text) => this.setState({ chosenDate: text })}
@@ -419,6 +429,9 @@ class AccountDetailBasic extends React.Component {
         if (checkResult === true) {
           validCode = String(i);
           return validCode;
+        } else if (checkResult === null) {
+          //执行自动付番的API有异常，直接退出，避免反复提示错误MSG
+          return validCode;
         }
       }
     }
@@ -443,8 +456,15 @@ class AccountDetailBasic extends React.Component {
     this.setState({ modalVisible: true });
   }
   _onselectDate4Android = async () => {
+    //安卓时间默认值
+    let initialDate;
+    if (this.state.date === '' || this.state.date.toString() === 'Invalid Date') {
+      initialDate = new Date();
+    } else {
+      initialDate = this.state.date;
+    }
     const { action, year, month, day } = await DatePickerAndroid.open({
-      date: this.state.date,
+      date: initialDate,
     });
     if (action !== DatePickerAndroid.dismissedAction) {
       const returnDate = new Date(year, month, day)
@@ -469,7 +489,8 @@ class AccountDetailBasic extends React.Component {
     let inputError = false;
     if (_.isNil(this.state.code) || _.isEmpty(this.state.code)) inputError = true;
     if (_.isNil(this.state.name) || _.isEmpty(this.state.name)) inputError = true;
-    if (_.isNil(this.state.date)) inputError = true;
+    //必须输入项目：APP创建的Account强制要有过期日付，因为是Demo账户
+    if (_.isNil(this.state.date) || !_.isDate(this.state.date) || this.state.date.toString() === 'Invalid Date') inputError = true;
     if (this.state.action === ACCOUNTACTION_ADD && _.isNil(this.state.license) || _.isEmpty(this.state.license)) inputError = true;
     if (inputError === true) {
       Alert.alert(
