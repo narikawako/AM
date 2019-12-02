@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { AsyncStorage, View, Text, ActivityIndicator, StatusBar, FlatList, Alert, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { Modal, AsyncStorage, View, Text, ActivityIndicator, StatusBar, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { loadAccountListAction, deleteAccountItemAction, userLogoutAction } from '../actions/RootAction'
 import { deleteItem, getList, logout, getUser } from '../assets/DBAction'
@@ -12,9 +12,11 @@ import { itemStyles } from './CommonStyles'
 class AccountList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isLoading: false };
+    //因为有Popup，所以要向Popup传递值的话，需要追加新的变量
+    this.state = { isLoading: false, modalVisible: false, deleteId: -1, deleteName: '', deleteWaitTime: 0 };
     this._onBack = this._onBack.bind(this);
     this._onForwards = this._onForwards.bind(this);
+    this._onDeleteAction = this._onDeleteAction.bind(this);
   }
   //---------------导航--------------- 
   static navigationOptions = ({ navigation }) => {
@@ -59,6 +61,28 @@ class AccountList extends React.Component {
     }
     return (
       <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => { }}>
+          <View style={styles.modalContainer}>
+            <View style={styles.popupContainer}>
+              <View style={styles.textContainer}>
+                <Text style={styles.textTitle} >削除</Text>
+                <Text style={styles.textContent} >[{this.state.deleteName}] を削除します、よろしいですか？</Text>
+              </View>
+              <View style={styles.modalButtonContainer}>
+                <TouchableOpacity onPress={() => { this.setState({ modalVisible: false }); this.interval && clearInterval(this.interval); }} style={styles.modalButton}>
+                  <Text style={styles.modalButtonText}>キャンセル</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this._onDeleteAction} style={styles.modalButton} disabled={this.state.deleteWaitTime > 0}>
+                  <Text style={this.state.deleteWaitTime > 0 ? styles.modalButtonDisableText : styles.modalButtonText}>OK {this.state.deleteWaitTime > 0 && "(" + this.state.deleteWaitTime + ")"} </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
         <StatusBar
           barStyle="default"
         />
@@ -123,27 +147,31 @@ class AccountList extends React.Component {
   _onForwards = () => {
     this.props.navigation.navigate('basic', { accountId: -1 })
   };
-  _onDeleteAccount = async (id, name) => {
-    Alert.alert(
-      '削除',
-      "[" + name + "]を削除します、よろしいですか？",
-      [
-        { text: 'キャンセル', style: 'cancel' },
-        {
-          text: 'OK', onPress: async () => {
-            this.setState({ isLoading: true });
-            //先从DB删除，然后更新State
-            let result = await deleteItem(id);
-            if (!_.isNil(result)) {
-              this.props.deleteAccountItemAction(id);
-            };
-            this.setState({ isLoading: false });
-          }
-        }
-      ],
-      { cancelable: false },
-    )
+  _onDeleteAccount = (id, name) => {
+    //显示Popup画面，开始计时
+    this.setState({ modalVisible: true, deleteId: id, deleteName: name, deleteWaitTime: 10 });
+    //更新计时器，计时结束，清空计时器
+    this.interval = setInterval(() => {
+      if (this.state.deleteWaitTime == 0) {
+        this.interval && clearInterval(this.interval);
+      } else {
+        this.setState({ deleteWaitTime: this.state.deleteWaitTime - 1 });
+      }
+    }, 1000);
   };
+  _onDeleteAction = async () => {
+    //关闭Popup，显示动画，加载数据
+    this.setState({ modalVisible: false, isLoading: true });
+    //先从DB删除，然后更新State
+    let result = await deleteItem(this.state.deleteId);
+    if (!_.isNil(result)) {
+      this.props.deleteAccountItemAction(this.state.deleteId);
+    };
+    //无论如何，要清空计时器
+    this.interval && clearInterval(this.interval);
+    //回到画面
+    this.setState({ isLoading: false });
+  }
   _onEditAccount = (id) => {
     this.props.navigation.navigate('basic', { accountId: id })
   };
@@ -326,6 +354,62 @@ const styles = StyleSheet.create(
     emptyImage: {
       width: 200,
       height: 200
+    },
+    modalContainer: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.3)',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    popupContainer: {
+      width: 300,
+      height: 160,
+      backgroundColor: '#ffffff',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 0,
+      borderRadius: 2,
+    },
+    textContainer: {
+      width: 300,
+      height: 110,
+    },
+    textTitle: {
+      marginTop: 20,
+      marginLeft: 20,
+      marginRight: 20,
+      fontSize: 20,
+      height:30,
+    },
+    textContent: {
+      marginTop: 10,
+      marginLeft: 20,
+      marginRight: 20,
+      fontSize: 16,
+      height:50,
+    },
+    modalButtonContainer: {
+      width: 300,
+      height: 50,
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      alignItems: "center",
+    },
+    modalButton: {
+      width: 80,
+      height: 30,
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    modalButtonText: {
+      color: "#0057e5",
+    },
+    modalButtonDisableText: {
+      color: "#a6a6a6",
     }
+
   }
 )
