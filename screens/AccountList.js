@@ -12,7 +12,8 @@ import { itemStyles } from './CommonStyles'
 class AccountList extends React.Component {
   constructor(props) {
     super(props);
-    //因为有Popup，所以要向Popup传递值的话，需要追加新的变量
+    //因为有Popup，Popup的数据要及时更新的话，需要在State里面追加新的变量：deleteId，deleteName，deleteWaitTime
+    //而且，Popup要显示隐藏的话，也需要一个变量modalVisible来控制
     this.state = { isLoading: false, modalVisible: false, deleteId: -1, deleteName: '', deleteWaitTime: 0 };
     this._onBack = this._onBack.bind(this);
     this._onForwards = this._onForwards.bind(this);
@@ -148,9 +149,9 @@ class AccountList extends React.Component {
     this.props.navigation.navigate('basic', { accountId: -1 })
   };
   _onDeleteAccount = (id, name) => {
-    //显示Popup画面，开始计时
+    //显示Popup画面，向Stage缓存本次操作的数据，并开始计时
     this.setState({ modalVisible: true, deleteId: id, deleteName: name, deleteWaitTime: 10 });
-    //更新计时器，计时结束，清空计时器
+    //更新计时器，如果计时结束，清空计时器
     this.interval = setInterval(() => {
       if (this.state.deleteWaitTime == 0) {
         this.interval && clearInterval(this.interval);
@@ -169,7 +170,7 @@ class AccountList extends React.Component {
     };
     //无论如何，要清空计时器
     this.interval && clearInterval(this.interval);
-    //回到画面
+    //回到List画面
     this.setState({ isLoading: false });
   }
   _onEditAccount = (id) => {
@@ -381,14 +382,14 @@ const styles = StyleSheet.create(
       marginLeft: 20,
       marginRight: 20,
       fontSize: 20,
-      height:30,
+      height: 30,
     },
     textContent: {
       marginTop: 10,
       marginLeft: 20,
       marginRight: 20,
       fontSize: 16,
-      height:50,
+      height: 50,
     },
     modalButtonContainer: {
       width: 300,

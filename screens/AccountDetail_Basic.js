@@ -43,7 +43,7 @@ class AccountDetailBasic extends React.Component {
       //store里面的id不需要在这里调整，接下来的7个属性都和store里的属性一一匹配
       action: this.props.navigation.getParam('accountId') === -1 ? ACCOUNTACTION_ADD : ACCOUNTACTION_EDIT,
       code: '',
-      name: '_デモ_',
+      name: '',
       date: lastDay,
       license: '3',
       demo: true,

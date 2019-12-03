@@ -105,7 +105,7 @@ export class BasicDisplayTable extends React.PureComponent {
         <View style={styles.rightContainer}>
           <View style={styles.rightCell}><Text>{this.props.basic.action === ACCOUNTACTION_ADD ? "新規" : "編集"}</Text></View>
           <View style={styles.rightCell}><Text>{this.props.basic.code}</Text></View>
-          <View style={styles.rightCell}><Text>{this.props.basic.name}</Text></View>
+          <View style={styles.rightCell}><Text>{this.props.basic.action === ACCOUNTACTION_ADD ? this.props.basic.name + '_デモ用' : this.props.basic.name}</Text></View>
           <View style={styles.rightCell}><Text>{this.props.basic.date}</Text></View>
           {
             (this.props.basic.action === ACCOUNTACTION_ADD) &&

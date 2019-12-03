@@ -195,7 +195,7 @@ class AccountDetailSummary extends React.Component {
       let addDetail = {
         BasicInfo: {
           Code: detail.basic.code,
-          Name: detail.basic.name,
+          Name: detail.basic.name + '_デモ用',
           EndDate: detail.basic.date,
           Remark: detail.basic.remark
         },
@@ -209,7 +209,7 @@ class AccountDetailSummary extends React.Component {
         const item = {
           id: newid,
           code: detail.basic.code,
-          name: detail.basic.name,
+          name: detail.basic.name + '_デモ用',
           date: detail.basic.date
         }
         //把这次存储的时间记录下来，方便下次给默认值
