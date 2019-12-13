@@ -55,10 +55,10 @@ const replaceItem = (list, newItem) => {
 const computePlusServices = (list) => {
     let plusServices = [];
     if (_.includes(list, "pluskaikei")) plusServices = _.concat(plusServices, _.map(plusKaikeiServices, "id"));
-    if (_.includes(list, "plusshisan")) plusServices = _.concat(plusServices, _.map(plusShisanServices, "id"));
     if (_.includes(list, "pluskyuyo")) plusServices = _.concat(plusServices, _.map(plusKyuyoServices, "id"));
-    if (_.includes(list, "plusjinji")) plusServices = _.concat(plusServices, _.map(plusJinjiServices, "id"));
+    if (_.includes(list, "plusshisan")) plusServices = _.concat(plusServices, _.map(plusShisanServices, "id"));
     if (_.includes(list, "plusgakuhi")) plusServices = _.concat(plusServices, _.map(plusGakuhiServices, "id"));
+    if (_.includes(list, "plusjinji")) plusServices = _.concat(plusServices, _.map(plusJinjiServices, "id"));
     if (plusServices.length > 0) {
         //其他plus服务的前提是共通plus，所以，如果其他plus有数据的话，一定要带上共通，没有值，那么就保持为全空
         plusServices = _.concat(plusServices, _.map(plusCommonServices, "id"));

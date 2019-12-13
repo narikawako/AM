@@ -10,7 +10,7 @@ import { BasicDisplayTable, ServiceDisplayTable, WizardHeader, RemarkDisplayTabl
 import { productStyles } from './CommonStyles';
 import { Timer } from './Timer';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-const AllServices = _.concat(kaikeiServices, shisanServices, kyuyoServices, jinjiServices, gakuhiServices, plusCommonServices, plusKaikeiServices, plusShisanServices, plusKyuyoServices, plusJinjiServices, plusGakuhiServices);
+const AllServices = _.concat(kaikeiServices, kyuyoServices, shisanServices, gakuhiServices, jinjiServices, plusCommonServices, plusKaikeiServices, plusKyuyoServices, plusShisanServices, plusGakuhiServices, plusJinjiServices);
 
 class AccountDetailSummary extends React.Component {
   constructor(props) {
@@ -39,7 +39,7 @@ class AccountDetailSummary extends React.Component {
       saveContent = this.props.basic.action === ACCOUNTACTION_ADD ? '作成' : '更新';
     }
     return (
-      <View style={{ flex: 1 ,paddingTop: getStatusBarHeight()  }}>
+      <View style={{ flex: 1, paddingTop: getStatusBarHeight() }}>
         <StatusBar
           barStyle="default"
         />
@@ -66,13 +66,7 @@ class AccountDetailSummary extends React.Component {
                 services={this.prepareServices(this.props.kaikei)}
               />
             }
-            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "shisan") && !_.isNil(this.props.shisan) && this.props.shisan.length > 0 &&
-              <ServiceDisplayTable
-                productName={"資産"}
-                backgroundColor={productStyles.shisanColor}
-                services={this.prepareServices(this.props.shisan)}
-              />
-            }
+
             {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "kyuyo") && !_.isNil(this.props.kyuyo) && this.props.kyuyo.length > 0 &&
               <ServiceDisplayTable
                 productName={"給与"}
@@ -80,11 +74,11 @@ class AccountDetailSummary extends React.Component {
                 services={this.prepareServices(this.props.kyuyo)}
               />
             }
-            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "jinji") && !_.isNil(this.props.jinji) && this.props.jinji.length > 0 &&
+            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "shisan") && !_.isNil(this.props.shisan) && this.props.shisan.length > 0 &&
               <ServiceDisplayTable
-                productName={"人事"}
-                backgroundColor={productStyles.jinjiColor}
-                services={this.prepareServices(this.props.jinji)}
+                productName={"資産"}
+                backgroundColor={productStyles.shisanColor}
+                services={this.prepareServices(this.props.shisan)}
               />
             }
             {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "gakuhi") && !_.isNil(this.props.gakuhi) && this.props.gakuhi.length > 0 &&
@@ -94,6 +88,14 @@ class AccountDetailSummary extends React.Component {
                 services={this.prepareServices(this.props.gakuhi)}
               />
             }
+            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "jinji") && !_.isNil(this.props.jinji) && this.props.jinji.length > 0 &&
+              <ServiceDisplayTable
+                productName={"人事"}
+                backgroundColor={productStyles.jinjiColor}
+                services={this.prepareServices(this.props.jinji)}
+              />
+            }
+
             {!_.isNil(this.props.basic) && !_.isEmpty(this.props.basic.plusproducts) && !_.isNil(this.props.plus) && this.props.plus.length > 0 &&
               <ServiceDisplayTable
                 productName={"ﾌﾟﾗｽ"}
