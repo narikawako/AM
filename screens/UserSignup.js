@@ -108,11 +108,13 @@ class Signup extends React.Component {
       { cancelable: false },
     );
 
+    //把注册的信息临时保存到本地
     await AsyncStorage.setItem('APPAM_ServerType', 'stage');
     await AsyncStorage.setItem('APPAM_TestUserName', this.state.userName);
     await AsyncStorage.setItem('APPAM_TestPassword', this.state.password);
 
-    //调用API验证身份
+    //无论是怎么注册的，内部都使用内置的用户调用API验证身份
+    //相当于忽略注册信息
     const data = {
       LogonName: 'LeySerCustomer',
       Password: '123qwe'

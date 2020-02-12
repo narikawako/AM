@@ -83,7 +83,8 @@ export const getUser = async (userId) => {
                     maxid: json.Data.MaxAvailableAccountCode
                 };
             } else {
-                Alert.alert(Error_Title_Server, json.Error, [{ text: 'OK' }], { cancelable: false });
+                //无法获取身份后会尝试静默登录，所以这里不再提示错误。
+                //Alert.alert(Error_Title_Server, json.Error, [{ text: 'OK' }], { cancelable: false });
                 return null;
             };
         })
