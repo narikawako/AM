@@ -1,7 +1,7 @@
 import React from 'react';
 import { AsyncStorage, View } from 'react-native';
 import _ from "lodash";
-import { getUser } from '../assets/DBAction';
+import { getUser, login } from '../assets/DBAction';
 import { updateUserAction } from '../actions/RootAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
