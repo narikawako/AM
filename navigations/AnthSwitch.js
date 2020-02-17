@@ -15,7 +15,7 @@ class AuthSwitch extends React.Component {
     //获取到本地的Token数据（userId）之后，再决定进入到哪个画面
     const userId = await AsyncStorage.getItem('APPAM_LoginFlag');
     if (_.isNil(userId)) {
-      //------------------场合1：首次登录，本地没有用户Token数据（userId），一定要去登录画面认证-----------------
+      //------------------场合1：首次登录或者刻意退出后再登录，本地没有用户Token数据（userId），一定要去登录画面认证-----------------
       this.props.navigation.navigate('AnthStack');
     } else {
       //本地有用户数据Token数据（userId），那么直接根据Token数据获取User对象
