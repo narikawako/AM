@@ -47,25 +47,30 @@ class Login extends React.Component {
           <TextInput style={styles.input} secureTextEntry={true} placeholder="パスワード" onChangeText={(text) => this.setState({ password: text })} value={this.state.password} />
         </View>
         <View style={styles.buttonContainer}>
-          {/* <TouchableOpacity onPress={() => { this.props.navigation.navigate('SignStack') }} style={styles.buttonLink}>
-            <Text style={styles.buttonText}>{" 登録画面へ "}</Text>
-          </TouchableOpacity> */}
-          {/* <TouchableOpacity>
-          </TouchableOpacity> */}
           <View style={styles.switchContainer}>
             <Switch
               onValueChange={(value) => { this.setState({ holdUserName: value }) }}
               value={this.state.holdUserName}
             />
-            <Text style={styles.smallText}>担当者名を記憶</Text>
+            <Text style={styles.switchText}>担当者名を記憶</Text>
+          </View>
+          <View style={styles.spliter}>
+
           </View>
           <View style={styles.switchContainer}>
             <Switch
               onValueChange={(value) => { this.setState({ holdPassword: value }) }}
               value={this.state.holdPassword}
             />
-            <Text style={styles.smallText}>パスワードを記憶</Text>
+            <Text style={styles.switchText}>ﾊﾟｽﾜｰﾄﾞを記憶</Text>
           </View>
+        </View>
+        <View style={styles.buttonContainer}>
+          {/* <TouchableOpacity onPress={() => { this.props.navigation.navigate('SignStack') }} style={styles.buttonLink}>
+            <Text style={styles.buttonText}>{" 登録画面へ "}</Text>
+          </TouchableOpacity> */}
+          <TouchableOpacity>
+          </TouchableOpacity>
           <TouchableOpacity onPress={this._signInAsync} style={styles.button}>
             <Text style={styles.buttonText}>{" ログイン "}</Text>
           </TouchableOpacity>
@@ -204,12 +209,14 @@ const styles = StyleSheet.create(
       marginRight: 5,
       marginBottom: 2,
     },
-    smallText: {
-      fontSize: 10,
+    switchText: {
+      flex:1,
+      fontSize: 13,
       color: '#555555',
       marginLeft: 5,
       marginRight: 5,
       marginBottom: 2,
+      textAlign:"center",
     },
     container: {
       backgroundColor: '#f0f0f0',
@@ -254,6 +261,7 @@ const styles = StyleSheet.create(
       fontSize: 16
     },
     switchContainer: {
+      flex:49,
       height: 40,
       flexDirection: "row",
       justifyContent: "space-between",
@@ -264,6 +272,9 @@ const styles = StyleSheet.create(
       borderWidth: 1,
       borderRadius: 5,
       borderColor: '#a6a6a6'
+    },
+    spliter:{
+      flex:2
     },
     buttonContainer: {
       height: 60,
