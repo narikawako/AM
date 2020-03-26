@@ -179,6 +179,9 @@ class Login extends React.Component {
         //全部结束之后，跳转页面
         this.props.navigation.navigate('HomeStack');
         //----------------------------------End：这是正常Login分支---------------------
+      } else {
+        //登录失败的话，得退回到登录画面，不能一直转
+        this.setState({ isLoading: false });
       }
     }
   };
@@ -210,13 +213,13 @@ const styles = StyleSheet.create(
       marginBottom: 2,
     },
     switchText: {
-      flex:1,
+      flex: 1,
       fontSize: 13,
       color: '#555555',
       marginLeft: 5,
       marginRight: 5,
       marginBottom: 2,
-      textAlign:"center",
+      textAlign: "center",
     },
     container: {
       backgroundColor: '#f0f0f0',
@@ -261,7 +264,7 @@ const styles = StyleSheet.create(
       fontSize: 16
     },
     switchContainer: {
-      flex:49,
+      flex: 49,
       height: 40,
       flexDirection: "row",
       justifyContent: "space-between",
@@ -273,8 +276,8 @@ const styles = StyleSheet.create(
       borderRadius: 5,
       borderColor: '#a6a6a6'
     },
-    spliter:{
-      flex:2
+    spliter: {
+      flex: 2
     },
     buttonContainer: {
       height: 60,

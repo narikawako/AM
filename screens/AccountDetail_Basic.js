@@ -506,7 +506,10 @@ class AccountDetailBasic extends React.Component {
     //只有新规的时候，才需要验证名字是否重复。
     //或者编辑的时候，只有用户改了名字才需要验证是否重复（改了名字之后，肯定和自己的原名字不一样，所以此时验证的刚好就是和别人是否重复）
     if ((this.state.action === ACCOUNTACTION_ADD) || (this.state.action === ACCOUNTACTION_EDIT && this.state.oldname !== this.state.name)) {
-      let validResult = await this._validName(this.state.name);
+      //验证重复的时候，需要带上后缀(仅限新规场合)
+      let tmp = '';
+      if (this.state.action === ACCOUNTACTION_ADD) tmp = '_デモ用';
+      let validResult = await this._validName(this.state.name + tmp);
       if (validResult === false) {
         Alert.alert(
           'エラー',
