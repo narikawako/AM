@@ -3,7 +3,6 @@
     "name": "LeySerAM",
     "slug": "LeySerAM",
     "privacy": "public",
-    "sdkVersion": "34.0.0",
     "platforms": [
       "ios",
       "android"
@@ -31,5 +30,5 @@
       "versionCode": 6
     }
   },
-  "//":"每次发布时修改版本号的地方有三处，这个地方两处：Version，VersionCode，还有Login页面一处"
+  "//": "每次发布时修改版本号的地方有三处，这个地方两处：Version，VersionCode，还有Login页面一处"
 }
