@@ -78,7 +78,7 @@ class Login extends React.Component {
         <View style={styles.footerContainer}>
           <View style={styles.footer}>
             <Text style={styles.footerTitle}>
-              {"Version: 1.0.7"}
+              {"Version: 1.0.8"}
             </Text>
           </View>
         </View>
