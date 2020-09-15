@@ -7,7 +7,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.8",
+    "version": "1.0.9",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -30,7 +30,7 @@
     },
     "android": {
       "package": "com.grapecity.leyser.am",
-      "versionCode": 6
+      "versionCode": 9
     }
   },
   "//": "每次发布时修改版本号的地方有三处，这个地方两处：Version，VersionCode，还有Login页面一处"
