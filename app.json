@@ -23,7 +23,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.grapecity.leyser.am"
+      "bundleIdentifier": "com.grapecity.leyser.am",
+      "infoPlist":{
+        "CFBundleDevelopmentRegion":"ja_JP"
+      }
     },
     "android": {
       "package": "com.grapecity.leyser.am",
