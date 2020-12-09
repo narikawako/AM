@@ -25,7 +25,7 @@ class Login extends React.Component {
       )
     }
     return (
-      <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
+      <View style={[styles.container, { paddingTop: getStatusBarHeight(true) }]}>
         <StatusBar
           barStyle="default"
         />

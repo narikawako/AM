@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { loadAccountDetailAction, clearAccountDetailAction, updateAccountDetailBasicAction, updateAccountDetailServiceAction } from '../actions/RootAction';
-import { getDetail, validateCode, validateName } from '../assets/DBAction';
+import { getDetail, validateCode, validateName, getConfigValue } from '../assets/DBAction';
 import { bindActionCreators } from 'redux';
 import { Modal, View, TextInput, Platform, DatePickerIOS, Switch, Text, DatePickerAndroid, ActivityIndicator, StatusBar, StyleSheet, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import {
@@ -48,6 +48,9 @@ class AccountDetailBasic extends React.Component {
       license: '3',
       demo: true,
       remark: '',
+      maxdate: '',
+      createddate: dt,
+
 
       //和store里的products属性匹配
       kaikei: true,
@@ -92,7 +95,7 @@ class AccountDetailBasic extends React.Component {
       initialDate = this.state.chosenDate;
     }
     return (
-      <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
+      <View style={[styles.container, { paddingTop: getStatusBarHeight(true) }]}>
         <Modal
           animationType="slide"
           transparent={true}
@@ -103,6 +106,7 @@ class AccountDetailBasic extends React.Component {
               <View style={styles.datePickerContainer}>
                 <DatePickerIOS
                   date={initialDate}
+                  maximumDate={this.state.maxdate}
                   mode="date"
                   locale="ja"
                   onDateChange={(text) => this.setState({ chosenDate: text })}
@@ -130,7 +134,8 @@ class AccountDetailBasic extends React.Component {
         />
         <ScrollView>
           <View style={styles.textContainer}>
-            <Text style={styles.text}>アカウントコード：自動付番範囲（{this.props.minid} - {this.props.maxid}）</Text>
+            <Text style={styles.text}>アカウントコード：</Text>
+            <Text style={styles.text}>自動付番範囲：{this.props.minid} - {this.props.maxid}</Text>
           </View>
           <View style={styles.inputContainer}>
             <TextInput style={styles.inputReadonly}
@@ -151,6 +156,7 @@ class AccountDetailBasic extends React.Component {
           </View>
           <View style={styles.textContainer}>
             <Text style={styles.text}>利用期限：</Text>
+            <Text style={styles.text}>作成日付：{formatDate(this.state.createddate)}　｜　最大期限： {formatDate(this.state.maxdate)}</Text>
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={this._onselectDate} style={styles.dateArea}>
@@ -321,6 +327,9 @@ class AccountDetailBasic extends React.Component {
     //this.props.basic在一开始一定是空的，所以要考虑默认值
     if (_.isNil(this.props.basic)) {
 
+      let maxMonth = await getConfigValue('MaxMonthForDemoAccount');
+      maxMonth = parseInt(maxMonth);
+
       //编辑的场合，要从数据库获取新数据
       if (this.state.action === ACCOUNTACTION_EDIT) {
 
@@ -338,6 +347,10 @@ class AccountDetailBasic extends React.Component {
         detail.gakuhi = _.intersection(detail.gakuhi, _.map(gakuhiServices, 'id'));
 
         if (!_.isNil(detail)) {
+
+          let dt = new Date(detail.basic.createddate);
+          let maxDay = new Date(dt.getFullYear(), dt.getMonth() + maxMonth, 0);
+
           //然后加载到画面上的state里
           this.setState({
             isLoading: false,
@@ -348,6 +361,8 @@ class AccountDetailBasic extends React.Component {
             date: new Date(detail.basic.date),
             chosenDate: new Date(detail.basic.date), //这是辅助用的
             remark: detail.basic.remark,
+            createddate: new Date(detail.basic.createddate),
+            maxdate: maxDay,
 
             //编辑的时候license和demo两个不需要显示
 
@@ -371,10 +386,14 @@ class AccountDetailBasic extends React.Component {
           this.setState({ isLoading: false });
         };
       } else {
+
+        let dt = new Date();
+        let maxDay = new Date(dt.getFullYear(), dt.getMonth() + maxMonth, 0);
+
         //因为默认的state就是按照新规来设置的，所以这里可以什么都不做
         //仅仅给自动付番的默认Code即可
         let validCode = await this._computeAutoCode();
-        this.setState({ code: validCode });
+        this.setState({ code: validCode, maxdate: maxDay });
         if (validCode === '') {
           Alert.alert(
             'エラー',
@@ -399,6 +418,8 @@ class AccountDetailBasic extends React.Component {
         license: this.props.basic.license,
         demo: this.props.basic.demo,
         remark: this.props.basic.remark,
+        createddate: new Date(this.props.basic.createddate),
+        maxdate: new Date(this.props.basic.maxdate),
 
         //这个时候action和isLoading不需要调整
 
@@ -465,6 +486,7 @@ class AccountDetailBasic extends React.Component {
     }
     const { action, year, month, day } = await DatePickerAndroid.open({
       date: initialDate,
+      maxDate: this.state.maxdate
     });
     if (action !== DatePickerAndroid.dismissedAction) {
       const returnDate = new Date(year, month, day)
@@ -621,9 +643,9 @@ const styles = StyleSheet.create(
     },
     textContainer: {
       height: 30,
-      flexDirection: "column",
-      justifyContent: "flex-end",
-      alignItems: "stretch",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "flex-end",
     },
     text: {
       fontSize: 13,

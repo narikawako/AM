@@ -18,7 +18,7 @@ class Signup extends React.Component {
   };
   render() {
     return (
-      <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
+      <View style={[styles.container, { paddingTop: getStatusBarHeight(true) }]}>
         <StatusBar
           barStyle="default"
         />

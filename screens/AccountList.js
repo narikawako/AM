@@ -36,7 +36,7 @@ class AccountList extends React.Component {
     }
     if (!_.isNil(this.props.list) && _.isEmpty(this.props.list)) {
       return (
-        <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
+        <View style={[styles.container, { paddingTop: getStatusBarHeight(true) }]}>
           <StatusBar
             barStyle="default"
           />
@@ -61,7 +61,7 @@ class AccountList extends React.Component {
       )
     }
     return (
-      <View style={[styles.container, { paddingTop: getStatusBarHeight() }]}>
+      <View style={[styles.container, { paddingTop: getStatusBarHeight(true) }]}>
         <Modal
           animationType="slide"
           transparent={true}

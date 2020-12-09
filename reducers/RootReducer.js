@@ -13,7 +13,8 @@ const stateSchema = {
             id: '',
             code: '',
             name: '',
-            date: ''
+            date: '',
+            createddate:''
         },
     ],
     //当前的明细数据（本地内存仅仅缓存当前操作的这个学校的明细数据，进入编辑或者新规时初始化，结束编辑或者新规时删除）
@@ -23,6 +24,7 @@ const stateSchema = {
         code: '',
         name: '',
         date: '',
+        createddate:'',
         license: '',
         demo: '',
         remark: '',

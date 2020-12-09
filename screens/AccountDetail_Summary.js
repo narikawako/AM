@@ -39,7 +39,7 @@ class AccountDetailSummary extends React.Component {
       saveContent = this.props.basic.action === ACCOUNTACTION_ADD ? '作成' : '更新';
     }
     return (
-      <View style={{ flex: 1, paddingTop: getStatusBarHeight() }}>
+      <View style={{ flex: 1, paddingTop: getStatusBarHeight(true) }}>
         <StatusBar
           barStyle="default"
         />

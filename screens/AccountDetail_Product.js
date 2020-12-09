@@ -22,7 +22,7 @@ export default class AccountDetailProduct extends React.Component {
   };
   render() {
     return (
-      <View style={{ flex: 1, paddingTop: getStatusBarHeight() }}>
+      <View style={{ flex: 1, paddingTop: getStatusBarHeight(true) }}>
         <StatusBar
           barStyle="default"
         />

@@ -36,6 +36,8 @@ const UpdateItemAPI = async () => { return await serverPath() + 'UpdateAccount';
 const ValidateCode = async () => { return await serverPath() + 'ValidateAccountCode'; }
 const ValidateName = async () => { return await serverPath() + 'ValidateAccountName'; }
 
+const GetValueAPI = async () => { return await serverPath() + 'GetConfigValue'; }
+
 const Error_Title_Network = 'ネットワークエラー';
 const Error_Title_Server = 'サーバーエラー';
 
@@ -131,7 +133,8 @@ export const getList = async (userId) => {
                         id: item.Id,
                         code: item.Code,
                         name: item.Name,
-                        date: item.EndDate
+                        date: item.EndDate,
+                        createddate:item.CreatedDate
                     })
                 });
                 return list;
@@ -160,7 +163,8 @@ export const getDetail = async (id) => {
                         code: json.Data.BasicInfo.Code + '',
                         name: json.Data.BasicInfo.Name,
                         date: json.Data.BasicInfo.EndDate,
-                        remark: json.Data.BasicInfo.Remark
+                        remark: json.Data.BasicInfo.Remark,
+                        createddate:json.Data.BasicInfo.CreatedDate
                     },
                     kaikei: json.Data.KaikeiServices,
                     shisan: json.Data.ShisanServices,
@@ -284,4 +288,25 @@ export const validateName = async (name) => {
             Alert.alert(Error_Title_Network, JSON.stringify(error), [{ text: 'OK' }], { cancelable: false });
             return null;
         });
+}
+
+export const getConfigValue = async (key) => {
+  return fetch(await GetValueAPI() + '?key=' + key, {
+      method: "GET",
+      headers: { "Content-Type": "application/json; charset=utf-8", },
+      credentials: "include"
+  })
+      .then((response) => response.json())
+      .then((json) => {
+          if (json.Success === true) {
+              return json.Data;
+          } else {
+              Alert.alert(Error_Title_Server, json.Error, [{ text: 'OK' }], { cancelable: false });
+              return null;
+          };
+      })
+      .catch((error) => {
+          Alert.alert(Error_Title_Network, JSON.stringify(error), [{ text: 'OK' }], { cancelable: false });
+          return null;
+      });
 }
