@@ -53,7 +53,7 @@ export default class AccountDetailProduct extends React.Component {
     let licenselist = this.state.licenses;
     let index = _.findIndex(licenselist, (item) => item.id === id);
     let olditem = licenselist[index];
-    if (_.isEmpty(olditem.license)) {
+    if (olditem.license === '' || olditem.license === undefined) {
       let newitem = { ...olditem, license: 3 } //焦点离开时，如果没有输入任何数据，那么填充默认值3
       this.setState({ licenses: [...licenselist.slice(0, index), newitem, ...licenselist.slice(index + 1)] });
     }
