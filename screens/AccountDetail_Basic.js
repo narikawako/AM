@@ -346,6 +346,8 @@ class AccountDetailBasic extends React.Component {
 
   componentDidMount = async () => {
 
+    this.setState({ isLoading: true });
+
     //this.props.basic在一开始一定是空的，所以要考虑默认值
     if (_.isNil(this.props.basic)) {
 
@@ -355,10 +357,10 @@ class AccountDetailBasic extends React.Component {
       //编辑的场合，要从数据库获取新数据
       if (this.state.action === ACCOUNTACTION_EDIT) {
 
-        this.setState({ isLoading: true });
+
         const currentId = this.props.navigation.getParam('accountId');
         let detail = await getDetail(currentId);
-        console.log("Detail Data:" + JSON.stringify(detail));
+        //console.log("Detail Data:" + JSON.stringify(detail));
         if (!_.isNil(detail)) {
 
           //从DB获取的数据中Service数据可能比APP里能设置的要多，所以这里要以APP的Service为标准来调整一下。
@@ -382,7 +384,7 @@ class AccountDetailBasic extends React.Component {
 
           //然后加载到画面上的state里
           this.setState({
-            isLoading: false,
+            //isLoading: false,
 
             code: detail.basic.code,
             name: detail.basic.name,
@@ -413,7 +415,7 @@ class AccountDetailBasic extends React.Component {
           //通过Action更新State
           this.props.loadAccountDetailAction(detail);
         } else {
-          this.setState({ isLoading: false });
+
         };
       } else {
 
@@ -427,7 +429,7 @@ class AccountDetailBasic extends React.Component {
         if (validCode === '') {
           Alert.alert(
             'エラー',
-            "申し訳ございませんが、自動付番はできません。付番範囲の調整を管理者へご連絡ください。",
+            "申し訳ございませんが、自動付番はできません。付番範囲について管理者までご確認ください。",
             [
               { text: 'OK' }
             ],
@@ -467,6 +469,9 @@ class AccountDetailBasic extends React.Component {
 
       });
     }
+
+    this.setState({ isLoading: false });
+
   }
 
   //---------------操作---------------

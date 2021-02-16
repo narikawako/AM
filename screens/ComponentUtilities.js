@@ -49,27 +49,41 @@ export class ServiceList extends React.Component {
             />
           </View>
         </View>
-        <FlatList style={styles.flatList}
+        {/* <FlatList style={styles.flatList}
           data={servicesData}
           renderItem={this._renderItem}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={{ paddingBottom: 5, paddingTop: 5 }}
-        />
+        /> */}
+        {
+          servicesData.map((item) =>
+            <ServiceListItem
+              id={item.id}
+              key={item.id}
+              serviceItem={item}
+              licensevisible={!_.includes(this.props.offlicenses, item.id)}
+              onChangeStatus={(id, value) => { this.props.onChangeStatus(id, value) }}
+              onChangeLicense={(id, value) => { this.props.onChangeLicense(id, value) }}
+              onChangeLicenseQuick={(id, value) => { this.props.onChangeLicenseQuick(id, value) }}
+              onBlurLicense={(id) => { this.props.onBlurLicense(id) }}
+            />
+          )
+        }
       </ScrollView>
     );
   }
-  _renderItem = ({ item }) => (
-    <ServiceListItem
-      id={item.id}
-      key={item.id}
-      serviceItem={item}
-      licensevisible={!_.includes(this.props.offlicenses, item.id)}
-      onChangeStatus={(id, value) => { this.props.onChangeStatus(id, value) }}
-      onChangeLicense={(id, value) => { this.props.onChangeLicense(id, value) }}
-      onChangeLicenseQuick={(id, value) => { this.props.onChangeLicenseQuick(id, value) }}
-      onBlurLicense={(id) => { this.props.onBlurLicense(id) }}
-    />
-  );
+  // _renderItem = ({ item }) => (
+  //   <ServiceListItem
+  //     id={item.id}
+  //     key={item.id}
+  //     serviceItem={item}
+  //     licensevisible={!_.includes(this.props.offlicenses, item.id)}
+  //     onChangeStatus={(id, value) => { this.props.onChangeStatus(id, value) }}
+  //     onChangeLicense={(id, value) => { this.props.onChangeLicense(id, value) }}
+  //     onChangeLicenseQuick={(id, value) => { this.props.onChangeLicenseQuick(id, value) }}
+  //     onBlurLicense={(id) => { this.props.onBlurLicense(id) }}
+  //   />
+  // );
 }
 
 class ServiceListItem extends React.PureComponent {

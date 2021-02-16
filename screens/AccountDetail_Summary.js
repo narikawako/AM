@@ -134,7 +134,7 @@ class AccountDetailSummary extends React.Component {
   }
   prepareServicesLicenses(services, licenses) {
     //把serviceid列表转换成service对象列表
-    console.log('licenses:' + JSON.stringify(licenses));
+    //console.log('licenses:' + JSON.stringify(licenses));
     let servicesData = [];
     _.forEach(services, (id) => {
       const index = _.findIndex(AllServices, (s) => { return s.id === id; });
