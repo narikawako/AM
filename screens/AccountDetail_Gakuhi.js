@@ -9,9 +9,10 @@ const mapStateToProps = (state) => {
   return {
     action: _.isNil(state.basic) ? ACCOUNTACTION_ADD : state.basic.action,
     products: _.isNil(state.basic) ? [] : state.basic.products,
-    services: state.gakuhi || [],
+    services: state.gakuhiservices || [],
+    licenses: state.gakuhilicenses || [],
     FixedServices: gakuhiServices,
-    ProductName: '学費サービス',
+    ProductName: '学費管理',
     ProductKey: 'gakuhi',
     ProductStyle: productStyles.gakuhiColor
   };

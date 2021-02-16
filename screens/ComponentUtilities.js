@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Switch, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Switch, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import _ from "lodash";
 import { ACCOUNTACTION_ADD } from '../assets/Consts'
 
@@ -34,10 +34,12 @@ export class ServiceList extends React.Component {
   render() {
     const servicesData = _.cloneDeep(this.props.FixedServices);
     _.forEach(servicesData, (item) => {
-      item.value = _.includes(this.props.services, item.id)
+      item.value = _.includes(this.props.services, item.id);
+      let index = _.findIndex(this.props.licenses, (lic) => lic.id === item.id);
+      item.license = this.props.licenses[index].license;
     });
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <View style={[styles.buttonContainer, this.props.backgroundColor]}>
           <Text style={styles.textContent}>全選択</Text>
           <View style={styles.buttonSubContainer}>
@@ -53,7 +55,7 @@ export class ServiceList extends React.Component {
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={{ paddingBottom: 5, paddingTop: 5 }}
         />
-      </View>
+      </ScrollView>
     );
   }
   _renderItem = ({ item }) => (
@@ -61,7 +63,11 @@ export class ServiceList extends React.Component {
       id={item.id}
       key={item.id}
       serviceItem={item}
+      licensevisible={!_.includes(this.props.offlicenses, item.id)}
       onChangeStatus={(id, value) => { this.props.onChangeStatus(id, value) }}
+      onChangeLicense={(id, value) => { this.props.onChangeLicense(id, value) }}
+      onChangeLicenseQuick={(id, value) => { this.props.onChangeLicenseQuick(id, value) }}
+      onBlurLicense={(id) => { this.props.onBlurLicense(id) }}
     />
   );
 }
@@ -71,13 +77,42 @@ class ServiceListItem extends React.PureComponent {
   render() {
     return (
       <View style={styles.buttonContainer}>
-        <Text>
-          {_.trim(this.props.serviceItem.name)}
-        </Text>
-        <Switch
-          onValueChange={(value) => { this.props.onChangeStatus(this.props.id, value) }}
-          value={this.props.serviceItem.value}
-        />
+        <View style={{ flex: 1 }}>
+          <Text>
+            {_.trim(this.props.serviceItem.name)}
+          </Text>
+        </View>
+
+        <View style={styles.innerswitch}>
+          <Switch
+            onValueChange={(value) => { this.props.onChangeStatus(this.props.id, value) }}
+            value={this.props.serviceItem.value}
+          />
+        </View>
+        {this.props.licensevisible &&
+          <View style={styles.innerlicense}>
+
+            <TextInput style={[styles.input, { backgroundColor: this.props.serviceItem.value ? '#ffffff' : '#ececec', color: this.props.serviceItem.value ? '#000000' : '#b2b2b2' }]}
+              placeholder='Lic'
+              onChangeText={(value) => { this.props.onChangeLicense(this.props.id, value) }}
+              onBlur={() => { this.props.onBlurLicense(this.props.id) }}
+              value={this.props.serviceItem.license + ''}
+              keyboardType={"numeric"}
+              editable={this.props.serviceItem.value}
+            />
+
+            <TouchableOpacity style={[styles.innerbutton, { backgroundColor: this.props.serviceItem.value ? '#F47224' : '#ececec' }]} onPress={() => { this.props.onChangeLicenseQuick(this.props.id, true) }} disabled={!this.props.serviceItem.value}>
+              <Text style={[styles.buttonText, { fontSize: 18, color: this.props.serviceItem.value ? '#000000' : '#b2b2b2' }]}>{"+"}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.innerbutton, { backgroundColor: this.props.serviceItem.value ? '#F47224' : '#ececec' }]} onPress={() => { this.props.onChangeLicenseQuick(this.props.id, false) }} disabled={!this.props.serviceItem.value}>
+              <Text style={[styles.buttonText, { fontSize: 18, color: this.props.serviceItem.value ? '#000000' : '#b2b2b2' }]}>{"-"}</Text>
+            </TouchableOpacity>
+          </View>
+        }
+        {!this.props.licensevisible &&
+          <View style={styles.innerlicense}>
+          </View>
+        }
       </View>
     );
   }
@@ -145,7 +180,7 @@ export class ServiceDisplayTable extends React.PureComponent {
         <View style={styles.rightServiceContainer}>
           {
             this.props.services.map((service) => (
-              <View style={styles.rightServiceCell} key={service.id}><Text>{_.trim(service.name)}</Text></View>
+              <View style={styles.rightServiceCell} key={service.id}><Text>{_.trim(service.name) + (_.includes(this.props.offlicenses, service.id) ? '' : (_.isNil(service.license) ? '' : '（ Lic : ' + service.license + ' ）'))}</Text></View>
             ))
           }
         </View>
@@ -229,7 +264,7 @@ const styles = StyleSheet.create(
       borderRadius: 5,
       backgroundColor: '#ffffff',
       width: 100,
-      height:40
+      height: 40
     },
 
 
@@ -368,6 +403,49 @@ const styles = StyleSheet.create(
       justifyContent: "center",
       alignItems: "flex-start",
       paddingLeft: 5,
+    },
+    input: {
+      height: 30,
+      width: 40,
+      borderColor: '#a6a6a6',
+      borderWidth: 1,
+      borderRadius: 5,
+      backgroundColor: '#ffffff',
+      paddingRight: 5,
+      paddingLeft: 5,
+      paddingTop: 5,
+      paddingBottom: 5,
+      fontSize: 15,
+      fontWeight: 'bold',
+      textAlign: 'center'
+    },
+    innerbutton: {
+      width: 50,
+      height: 30,
+      backgroundColor: '#F47224',
+      borderWidth: 0,
+      borderRadius: 5,
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    innerlicense: {
+      flexDirection: 'row',
+      justifyContent: "space-between",
+      alignItems: "stretch",
+      width: 150,
+      borderWidth: 0,
+      borderRadius: 5,
+    },
+    innerswitch: {
+      flexDirection: 'row',
+      justifyContent: "center",
+      alignItems: "center",
+      borderColor: '#a6a6a6',
+      borderWidth: 0,
+      borderRadius: 5,
+      backgroundColor: '#ffffff',
+      width: 80,
     },
   }
 )

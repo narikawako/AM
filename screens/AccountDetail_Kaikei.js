@@ -12,10 +12,11 @@ const mapStateToProps = (state) => {
     //这个参数确定跳转到哪里
     products: _.isNil(state.basic) ? [] : state.basic.products,
     //画面核心数据
-    services: state.kaikei || [],
+    services: state.kaikeiservices || [],
+    licenses: state.kaikeilicenses || [],
     FixedServices: kaikeiServices,
     //画面辅助数据
-    ProductName: '会計サービス',
+    ProductName: '学校会計',
     ProductKey: 'kaikei',
     ProductStyle: productStyles.kaikeiColor
   };

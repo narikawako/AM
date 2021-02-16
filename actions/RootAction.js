@@ -65,6 +65,15 @@ export const updateAccountDetailBasicAction = (basic) => {
     }
 }
 
+//新规的时候，指定license数目之后要及时更新license设定数据，因为后续步骤需要这个数据
+export const  ACCOUNT_UPDATEDETAILLICENSE ='ACCOUNT_UPDATEDETAILLICENSE'
+export const updateAccountDetailLicenseAction = (licenses) => {
+  return {
+      type: ACCOUNT_UPDATEDETAILLICENSE,
+      payload: licenses
+  }
+}
+
 //--------AccountDetail—Product页面：
 //前进离开这个画面的时候，要更新State中的Detail的产品Service信息，实时存储最新的数据到State。
 //后退的时候不更新State。

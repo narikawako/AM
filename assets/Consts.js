@@ -13,8 +13,8 @@ export const kaikeiServices = [
     { id: 5, name: '部所予算' },
     { id: 6, name: '目的予算' },
 
-    { id: 504010, name: '予算執行' },
-    { id: 504000, name: '他校送付' }
+    { id: 504010, name: '予算執行(OP)' },
+    { id: 504000, name: '他校送付(OP)' }
 
     //{ id: 13, name: '	税別経理	' },
     //{ id: 16, name: '	電子預金	' },
@@ -29,7 +29,7 @@ export const kyuyoServices = [
 
     { id: 123, name: '人件費ｼﾐｭﾚｰｼｮﾝ' },
     { id: 125, name: '人事情報' },
-    { id: 509004, name: '電子明細' }
+    { id: 509004, name: '電子明細(OP)' }
 
     //{ id: 126, name: '	電子明細	' },
 ]
@@ -48,6 +48,13 @@ export const jinjiServices = [
 //默认是Off的那些Service
 export const defaultOffServices = [
     2 //会计：幼稚園
+]
+
+//这三个是OP，不能设置license数
+export const defaultofflicenses =[
+  504010,
+  504000,
+  509004
 ]
 
 

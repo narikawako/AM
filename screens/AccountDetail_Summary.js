@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { View, AsyncStorage, StatusBar, StyleSheet, ScrollView, Alert } from 'react-native';
 import _ from 'lodash';
 import { addItem, updateItem } from '../assets/DBAction';
-import { ACCOUNTACTION_ADD, kaikeiServices, shisanServices, kyuyoServices, jinjiServices, gakuhiServices, plusCommonServices, plusKaikeiServices, plusShisanServices, plusKyuyoServices, plusJinjiServices, plusGakuhiServices } from '../assets/Consts';
+import { ACCOUNTACTION_ADD, kaikeiServices, shisanServices, kyuyoServices, jinjiServices, gakuhiServices, plusCommonServices, plusKaikeiServices, plusShisanServices, plusKyuyoServices, plusJinjiServices, plusGakuhiServices,defaultofflicenses } from '../assets/Consts';
 import { BasicDisplayTable, ServiceDisplayTable, WizardHeader, RemarkDisplayTable } from '../screens/ComponentUtilities';
 import { productStyles } from './CommonStyles';
 import { Timer } from './Timer';
@@ -59,40 +59,45 @@ class AccountDetailSummary extends React.Component {
               <RemarkDisplayTable
                 remark={this.props.basic.remark}
               />}
-            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "kaikei") && !_.isNil(this.props.kaikei) && this.props.kaikei.length > 0 &&
+            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "kaikei") && !_.isNil(this.props.kaikeiservices) && this.props.kaikeiservices.length > 0 &&
               <ServiceDisplayTable
                 productName={"会計"}
                 backgroundColor={productStyles.kaikeiColor}
-                services={this.prepareServices(this.props.kaikei)}
+                services={this.prepareServicesLicenses(this.props.kaikeiservices, this.props.kaikeilicenses)}
+                offlicenses ={defaultofflicenses}
               />
             }
 
-            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "kyuyo") && !_.isNil(this.props.kyuyo) && this.props.kyuyo.length > 0 &&
+            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "kyuyo") && !_.isNil(this.props.kyuyoservices) && this.props.kyuyoservices.length > 0 &&
               <ServiceDisplayTable
                 productName={"給与"}
                 backgroundColor={productStyles.kyuyoColor}
-                services={this.prepareServices(this.props.kyuyo)}
+                services={this.prepareServicesLicenses(this.props.kyuyoservices, this.props.kyuyolicenses)}
+                offlicenses ={defaultofflicenses}
               />
             }
-            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "shisan") && !_.isNil(this.props.shisan) && this.props.shisan.length > 0 &&
+            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "shisan") && !_.isNil(this.props.shisanservices) && this.props.shisanservices.length > 0 &&
               <ServiceDisplayTable
                 productName={"資産"}
                 backgroundColor={productStyles.shisanColor}
-                services={this.prepareServices(this.props.shisan)}
+                services={this.prepareServicesLicenses(this.props.shisanservices, this.props.shisanlicenses)}
+                offlicenses ={defaultofflicenses}
               />
             }
-            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "gakuhi") && !_.isNil(this.props.gakuhi) && this.props.gakuhi.length > 0 &&
+            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "gakuhi") && !_.isNil(this.props.gakuhiservices) && this.props.gakuhiservices.length > 0 &&
               <ServiceDisplayTable
                 productName={"学費"}
                 backgroundColor={productStyles.gakuhiColor}
-                services={this.prepareServices(this.props.gakuhi)}
+                services={this.prepareServicesLicenses(this.props.gakuhiservices, this.props.gakuhilicenses)}
+                offlicenses ={defaultofflicenses}
               />
             }
-            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "jinji") && !_.isNil(this.props.jinji) && this.props.jinji.length > 0 &&
+            {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "jinji") && !_.isNil(this.props.jinjiservices) && this.props.jinjiservices.length > 0 &&
               <ServiceDisplayTable
                 productName={"人事"}
                 backgroundColor={productStyles.jinjiColor}
-                services={this.prepareServices(this.props.jinji)}
+                services={this.prepareServicesLicenses(this.props.jinjiservices, this.props.jinjilicenses)}
+                offlicenses ={defaultofflicenses}
               />
             }
 
@@ -101,6 +106,7 @@ class AccountDetailSummary extends React.Component {
                 productName={"ﾌﾟﾗｽ"}
                 backgroundColor={productStyles.plusColor}
                 services={this.prepareServices(this.props.plus)}
+                offlicenses ={defaultofflicenses}
               />
             }
           </View >
@@ -125,6 +131,19 @@ class AccountDetailSummary extends React.Component {
         this.setState({ totalTime: 20 });
       }
     }
+  }
+  prepareServicesLicenses(services, licenses) {
+    //把serviceid列表转换成service对象列表
+    console.log('licenses:' + JSON.stringify(licenses));
+    let servicesData = [];
+    _.forEach(services, (id) => {
+      const index = _.findIndex(AllServices, (s) => { return s.id === id; });
+      let newitem = AllServices[index];
+      const indexex = _.findIndex(licenses, (lic) => { return lic.id === id; });
+      newitem.license = licenses[indexex].license;
+      servicesData = _.concat(servicesData, newitem)
+    });
+    return servicesData;
   }
   prepareServices(services) {
     //把serviceid列表转换成service对象列表
@@ -162,33 +181,57 @@ class AccountDetailSummary extends React.Component {
       { cancelable: false },
     )
   };
+
+  //新规，编辑时，向服务端传入service数据时的预先处理。
+  _prepareServiceData = (licenses, services) => {
+    let returndata = [];
+    //以service为基准遍历（service是本次要签约的所有的服务，不签约的，不会出现在这个集合里）
+    _.forEach(services, (id) => {
+      const index = _.findIndex(licenses, (s) => { return s.id === id; });
+      if (index >= 0) {
+        //如果设定了license，那么使用设定的license（这个分支是Plus以外的分支，因为可以在画面上设置License数据）
+        returndata = _.concat(returndata, { Id: licenses[index].id, License: licenses[index].License })
+      } else {
+        //如果没设定，那么使用默认值1（这个分支是Plus的分支，因为Plus不允许再画面上设置License数据）
+        returndata = _.concat(returndata, { Id: licenses[index].id, License: 1 })
+      }
+    })
+    return returndata;
+  }
+
   _onForwards = async () => {
 
     //把所有的service整理成一个大集合，这个集合是目前这个Account契约的最新的所有service
     let services = [];
+    let licenses = [];
     if (!_.isNil(this.props.plus) && this.props.plus.length > 0) {
       services = _.concat(services, this.props.plus)
     };
-    if (_.includes(this.props.basic.products, "kaikei") && !_.isNil(this.props.kaikei) && this.props.kaikei.length > 0) {
-      services = _.concat(services, this.props.kaikei)
+    if (_.includes(this.props.basic.products, "kaikei") && !_.isNil(this.props.kaikeiservices) && this.props.kaikeiservices.length > 0) {
+      services = _.concat(services, this.props.kaikeiservices)
+      licenses = _.concat(licenses, this.props.kaikeilicenses)
     };
-    if (_.includes(this.props.basic.products, "shisan") && !_.isNil(this.props.shisan) && this.props.shisan.length > 0) {
-      services = _.concat(services, this.props.shisan)
+    if (_.includes(this.props.basic.products, "shisan") && !_.isNil(this.props.shisanservices) && this.props.shisanservices.length > 0) {
+      services = _.concat(services, this.props.shisanservices)
+      licenses = _.concat(licenses, this.props.shisanlicenses)
     };
-    if (_.includes(this.props.basic.products, "kyuyo") && !_.isNil(this.props.kyuyo) && this.props.kyuyo.length > 0) {
-      services = _.concat(services, this.props.kyuyo)
+    if (_.includes(this.props.basic.products, "kyuyo") && !_.isNil(this.props.kyuyoservices) && this.props.kyuyoservices.length > 0) {
+      services = _.concat(services, this.props.kyuyoservices)
+      licenses = _.concat(licenses, this.props.kyuyolicenses)
     };
-    if (_.includes(this.props.basic.products, "jinji") && !_.isNil(this.props.jinji) && this.props.jinji.length > 0) {
-      services = _.concat(services, this.props.jinji)
+    if (_.includes(this.props.basic.products, "jinji") && !_.isNil(this.props.jinjiservices) && this.props.jinjiservices.length > 0) {
+      services = _.concat(services, this.props.jinjiservices)
+      licenses = _.concat(licenses, this.props.jinjilicenses)
     };
-    if (_.includes(this.props.basic.products, "gakuhi") && !_.isNil(this.props.gakuhi) && this.props.gakuhi.length > 0) {
-      services = _.concat(services, this.props.gakuhi)
+    if (_.includes(this.props.basic.products, "gakuhi") && !_.isNil(this.props.gakuhiservices) && this.props.gakuhiservices.length > 0) {
+      services = _.concat(services, this.props.gakuhiservices)
+      licenses = _.concat(licenses, this.props.gakuhilicenses)
     };
 
     //提交服务端用的数据
     const detail = {
       basic: this.props.basic,
-      service: services
+      service: _prepareServiceData(services, licenses)
     }
 
     if (this.props.basic.action === ACCOUNTACTION_ADD) {
@@ -201,10 +244,11 @@ class AccountDetailSummary extends React.Component {
           EndDate: detail.basic.date,
           Remark: detail.basic.remark
         },
-        License: detail.basic.license,
+        //License: detail.basic.license,
         UseDemoData: detail.basic.demo,
         Services: detail.service
       }
+      //console.log("Added Data:" + JSON.stringify(addDetail));
       let start = new Date();
       let newid = await addItem(addDetail);
       if (!_.isNil(newid)) {
@@ -239,6 +283,7 @@ class AccountDetailSummary extends React.Component {
         },
         Services: detail.service
       }
+      //console.log("Edited Data:" + JSON.stringify(editDetail));
       let start = new Date();
       let result = await updateItem(editDetail);
       if (!_.isNil(result)) {
@@ -269,14 +314,20 @@ class AccountDetailSummary extends React.Component {
 const mapStateToProps = (state) => {
   //这个组件订阅哪些State??
   //订阅所有的明细数据，因为要保存了
+  //console.log('kaikeilicenses:' + JSON.stringify(state.kaikeilicenses));
   return {
     basic: state.basic,
-    kaikei: state.kaikei,
-    shisan: state.shisan,
-    kyuyo: state.kyuyo,
-    jinji: state.jinji,
-    gakuhi: state.gakuhi,
-    plus: state.plus
+    kaikeiservices: state.kaikeiservices,
+    shisanservices: state.shisanservices,
+    kyuyoservices: state.kyuyoservices,
+    jinjiservices: state.jinjiservices,
+    gakuhiservices: state.gakuhiservices,
+    plus: state.plus,
+    kaikeilicenses: state.kaikeilicenses,
+    shisanlicenses: state.shisanlicenses,
+    kyuyolicenses: state.kyuyolicenses,
+    jinjilicenses: state.jinjilicenses,
+    gakuhilicenses: state.gakuhilicenses,
   };
 }
 const mapDispatchToProps = (dispatch) => {

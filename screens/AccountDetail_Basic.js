@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { loadAccountDetailAction, clearAccountDetailAction, updateAccountDetailBasicAction, updateAccountDetailServiceAction } from '../actions/RootAction';
+import { loadAccountDetailAction, clearAccountDetailAction, updateAccountDetailBasicAction, updateAccountDetailServiceAction, updateAccountDetailLicenseAction } from '../actions/RootAction';
 import { getDetail, validateCode, validateName, getConfigValue } from '../assets/DBAction';
 import { bindActionCreators } from 'redux';
 import { Modal, View, TextInput, Platform, DatePickerIOS, Switch, Text, DatePickerAndroid, ActivityIndicator, StatusBar, StyleSheet, Alert, ScrollView, TouchableOpacity } from 'react-native';
@@ -156,7 +156,7 @@ class AccountDetailBasic extends React.Component {
           </View>
           <View style={styles.textContainer}>
             <Text style={styles.text}>利用期限：</Text>
-            <Text style={styles.text}>作成日付：{formatDate(this.state.createddate)}　｜　最大期限： {formatDate(this.state.maxdate)}</Text>
+            <Text style={styles.text}>作成日付：{formatDate(this.state.createddate)}｜最大期限：{formatDate(this.state.maxdate)}</Text>
           </View>
           <View style={styles.inputContainer}>
             <TouchableOpacity onPress={this._onselectDate} style={styles.dateArea}>
@@ -212,7 +212,7 @@ class AccountDetailBasic extends React.Component {
           </View>
           <View style={[styles.serviceContainer, productStyles.kaikeiColor]}>
             <View style={styles.serviceLabel}>
-              <Text style={styles.serviceLabelContent} >会計システム</Text>
+              <Text style={styles.serviceLabelContent} >学校会計</Text>
             </View>
             <View style={[styles.itemContainer]}>
               <Text >本体</Text>
@@ -232,7 +232,7 @@ class AccountDetailBasic extends React.Component {
           </View>
           <View style={[styles.serviceContainer, productStyles.kyuyoColor]}>
             <View style={styles.serviceLabel}>
-              <Text style={styles.serviceLabelContent} >給与システム</Text>
+              <Text style={styles.serviceLabelContent} >学校給与</Text>
             </View>
             <View style={[styles.itemContainer]}>
               <Text >本体</Text>
@@ -252,7 +252,7 @@ class AccountDetailBasic extends React.Component {
           </View>
           <View style={[styles.serviceContainer, productStyles.shisanColor]}>
             <View style={styles.serviceLabel}>
-              <Text style={styles.serviceLabelContent} >資産システム</Text>
+              <Text style={styles.serviceLabelContent} >資産管理</Text>
             </View>
             <View style={[styles.itemContainer]}>
               <Text >本体</Text>
@@ -272,7 +272,7 @@ class AccountDetailBasic extends React.Component {
           </View>
           <View style={[styles.serviceContainer, productStyles.gakuhiColor]}>
             <View style={styles.serviceLabel}>
-              <Text style={styles.serviceLabelContent} >学費システム</Text>
+              <Text style={styles.serviceLabelContent} >学費管理</Text>
             </View>
             <View style={[styles.itemContainer]}>
               <Text >本体</Text>
@@ -292,7 +292,7 @@ class AccountDetailBasic extends React.Component {
           </View>
           <View style={[styles.serviceContainer, productStyles.jinjiColor]}>
             <View style={styles.serviceLabel}>
-              <Text style={styles.serviceLabelContent} >人事システム</Text>
+              <Text style={styles.serviceLabelContent} >人事管理</Text>
             </View>
             <View style={[styles.itemContainer]}>
               <Text >本体</Text>
@@ -322,6 +322,21 @@ class AccountDetailBasic extends React.Component {
     );
   }
   //---------------数据--------------- 
+  _prepareLicense = (product, licenses) => {
+    let fixServiceData = _.map(_.find(fixServices, { 'product': product }).services, 'id');
+    let licensesdata = [];
+    _.forEach(fixServiceData, (id) => {
+      let index = _.findIndex(licenses, (lic) => lic.Id === id);
+      if (index < 0) {
+        //没有签约的服务，默认license是3，和新规时的默认值保持一致
+        licensesdata.push({ id: id, license: 3 });
+      } else {
+        licensesdata.push({ id: id, license: licenses[index].License });
+      }
+    })
+    return licensesdata;
+  }
+
   componentDidMount = async () => {
 
     //this.props.basic在一开始一定是空的，所以要考虑默认值
@@ -336,17 +351,23 @@ class AccountDetailBasic extends React.Component {
         this.setState({ isLoading: true });
         const currentId = this.props.navigation.getParam('accountId');
         let detail = await getDetail(currentId);
-
-        //从DB获取的数据中Service数据可能比APP里能设置的要多，所以这里要以APP的Service为标准来调整一下。
-        //例如：万一通过WebAM添加了资产Lite这个服务，因为APP的Service全集中没有这个服务，所以可能会在后续处理中出错。
-        //即，在APP里面能调整的Service一定是APP能支持的那些Service，APP不支持的Service默认都不能契约。因为都是先删后加
-        detail.kaikei = _.intersection(detail.kaikei, _.map(kaikeiServices, 'id'));
-        detail.shisan = _.intersection(detail.shisan, _.map(shisanServices, 'id'));
-        detail.kyuyo = _.intersection(detail.kyuyo, _.map(kyuyoServices, 'id'));
-        detail.jinji = _.intersection(detail.jinji, _.map(jinjiServices, 'id'));
-        detail.gakuhi = _.intersection(detail.gakuhi, _.map(gakuhiServices, 'id'));
-
         if (!_.isNil(detail)) {
+
+          //从DB获取的数据中Service数据可能比APP里能设置的要多，所以这里要以APP的Service为标准来调整一下。
+          //例如：万一通过WebAM添加了资产Lite这个服务，因为APP的Service全集中没有这个服务，所以可能会在后续处理中出错。
+          //即，在APP里面能调整的Service一定是APP能支持的那些Service，APP不支持的Service默认都不能契约。因为都是先删后加
+          detail.kaikeiservices = _.intersection(detail.kaikeiservices, _.map(kaikeiServices, 'id'));
+          detail.shisanservices = _.intersection(detail.shisanservices, _.map(shisanServices, 'id'));
+          detail.kyuyoservices = _.intersection(detail.kyuyoservices, _.map(kyuyoServices, 'id'));
+          detail.jinjiservices = _.intersection(detail.jinjiservices, _.map(jinjiServices, 'id'));
+          detail.gakuhiservices = _.intersection(detail.gakuhiservices, _.map(gakuhiServices, 'id'));
+
+          //从DB获取的数据中License数据仅仅是签约的那一部分，没有签约的一部分，本次可能会签约，所以默认的License数据里面得有这部分数据方便选择。
+          detail.kaikeilicenses = this._prepareLicense('kaikei', detail.kaikeilicenses);
+          detail.shisanlicenses = this._prepareLicense('shisan', detail.shisanlicenses);
+          detail.kyuyolicenses = this._prepareLicense('kyuyo', detail.kyuyolicenses);
+          detail.jinjilicenses = this._prepareLicense('jinji', detail.jinjilicenses);
+          detail.gakuhilicenses = this._prepareLicense('gakuhi', detail.gakuhilicenses);
 
           let dt = new Date(detail.basic.createddate);
           let maxDay = new Date(dt.getFullYear(), dt.getMonth() + maxMonth, 0);
@@ -367,11 +388,11 @@ class AccountDetailBasic extends React.Component {
             //编辑的时候license和demo两个不需要显示
 
             //根据各自的service集合来判定是否默认check上radiobutton
-            kaikei: !_.isNil(detail.kaikei) && detail.kaikei.length > 0,
-            shisan: !_.isNil(detail.shisan) && detail.shisan.length > 0,
-            kyuyo: !_.isNil(detail.kyuyo) && detail.kyuyo.length > 0,
-            jinji: !_.isNil(detail.jinji) && detail.jinji.length > 0,
-            gakuhi: !_.isNil(detail.gakuhi) && detail.gakuhi.length > 0,
+            kaikei: !_.isNil(detail.kaikeiservices) && detail.kaikeiservices.length > 0,
+            shisan: !_.isNil(detail.shisanservices) && detail.shisanservices.length > 0,
+            kyuyo: !_.isNil(detail.kyuyoservices) && detail.kyuyoservices.length > 0,
+            jinji: !_.isNil(detail.jinjiservices) && detail.jinjiservices.length > 0,
+            gakuhi: !_.isNil(detail.gakuhiservices) && detail.gakuhiservices.length > 0,
 
             pluskaikei: !_.isNil(detail.plus) && detail.plus.length > 0 && hasService(detail.plus, plusKaikeiServices),
             plusshisan: !_.isNil(detail.plus) && detail.plus.length > 0 && hasService(detail.plus, plusShisanServices),
@@ -380,6 +401,7 @@ class AccountDetailBasic extends React.Component {
             plusgakuhi: !_.isNil(detail.plus) && detail.plus.length > 0 && hasService(detail.plus, plusGakuhiServices),
 
           });
+          //console.log('detail:' + JSON.stringify(detail));
           //通过Action更新State
           this.props.loadAccountDetailAction(detail);
         } else {
@@ -577,6 +599,23 @@ class AccountDetailBasic extends React.Component {
     //先更新State(无论新规还是编辑，都需要更新)
     this.props.updateAccountDetailBasicAction(basic);
 
+    //新规的场合，因为license要在画面上指定，所以更新全部license默认数据的时机放到下一步的时候
+    if (this.state.action === ACCOUNTACTION_ADD) {
+      let licensesdata = {};
+      _.forEach(fixServices, (product) => {
+        let licenses = [];
+        _.forEach(product.services, (service) => {
+          licenses.push({ id: service.id, license: this.state.license });
+        });
+        if (product.product === 'kaikei') licensesdata.kaikeilicenses = licenses;
+        if (product.product === 'shisan') licensesdata.shisanlicenses = licenses;
+        if (product.product === 'kyuyo') licensesdata.kyuyolicenses = licenses;
+        if (product.product === 'jinji') licensesdata.jinjilicenses = licenses;
+        if (product.product === 'gakuhi') licensesdata.gakuhilicenses = licenses;
+      });
+      this.props.updateAccountDetailLicenseAction(licensesdata);
+    }
+
     if (forwards2Detail) {
       //页面跳转到详细设定
       //state的详细信息都是空的
@@ -593,7 +632,8 @@ class AccountDetailBasic extends React.Component {
         _.remove(fixServiceData, (id) => { return _.includes(defaultOffServices, id) })
         this.props.updateAccountDetailServiceAction({
           product: pro,
-          services: fixServiceData
+          services: fixServiceData,
+          licenses: null //因为新规的时候，在这个方法的上文已经更新过全局state了，编辑的场合在GetDetail的时候也更新过全局state了，所以这里没有必要再次更新。传入null意味着不更新license数据
         });
       })
       //强制跳转到Summary画面
@@ -621,7 +661,7 @@ const mapDispatchToProps = (dispatch) => {
   //清理明细数据
   //保存Basic数据
   //保存明细数据（快速创建的场合）
-  return bindActionCreators({ loadAccountDetailAction, clearAccountDetailAction, updateAccountDetailBasicAction, updateAccountDetailServiceAction }, dispatch);
+  return bindActionCreators({ loadAccountDetailAction, clearAccountDetailAction, updateAccountDetailBasicAction, updateAccountDetailServiceAction, updateAccountDetailLicenseAction }, dispatch);
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AccountDetailBasic);
 
@@ -751,7 +791,8 @@ const styles = StyleSheet.create(
       marginBottom: 10,
     },
     serviceLabel: {
-      width: 100,
+      //width: 100,
+      flex: 1
     },
     serviceLabelContent: {
       fontSize: 15,
@@ -770,7 +811,8 @@ const styles = StyleSheet.create(
       paddingLeft: 10,
       paddingTop: 5,
       paddingBottom: 5,
-      width: 98,
+      width: 100,
+      marginLeft:10
     },
     buttonContainer: {
       height: 70,
@@ -785,7 +827,7 @@ const styles = StyleSheet.create(
       marginRight: 0,
     },
     button: {
-      width: 300,
+      width: 350,
       height: 50,
       backgroundColor: '#F47224',
       borderWidth: 0,
