@@ -10,6 +10,7 @@ import {
   hasService,
   fixServices,
   defaultOffServices,
+  defaultofflicenses,
   kaikeiServices,
   shisanServices,
   kyuyoServices,
@@ -326,12 +327,18 @@ class AccountDetailBasic extends React.Component {
     let fixServiceData = _.map(_.find(fixServices, { 'product': product }).services, 'id');
     let licensesdata = [];
     _.forEach(fixServiceData, (id) => {
-      let index = _.findIndex(licenses, (lic) => lic.Id === id);
-      if (index < 0) {
-        //没有签约的服务，默认license是3，和新规时的默认值保持一致
-        licensesdata.push({ id: id, license: 3 });
+      if (_.includes(defaultofflicenses, id)) {
+        //如果是OP的话，默认值是1
+        licensesdata.push({ id: id, license: 1 });
       } else {
-        licensesdata.push({ id: id, license: licenses[index].License });
+        //不是OP的话，看服务端的数据
+        let index = _.findIndex(licenses, (lic) => lic.Id === id);
+        if (index < 0) {
+          //没有签约的服务，默认license是3，和新规时的默认值保持一致
+          licensesdata.push({ id: id, license: 3 });
+        } else {
+          licensesdata.push({ id: id, license: Number(licenses[index].License) });
+        }
       }
     })
     return licensesdata;
@@ -351,6 +358,7 @@ class AccountDetailBasic extends React.Component {
         this.setState({ isLoading: true });
         const currentId = this.props.navigation.getParam('accountId');
         let detail = await getDetail(currentId);
+        console.log("Detail Data:" + JSON.stringify(detail));
         if (!_.isNil(detail)) {
 
           //从DB获取的数据中Service数据可能比APP里能设置的要多，所以这里要以APP的Service为标准来调整一下。
@@ -605,7 +613,13 @@ class AccountDetailBasic extends React.Component {
       _.forEach(fixServices, (product) => {
         let licenses = [];
         _.forEach(product.services, (service) => {
-          licenses.push({ id: service.id, license: this.state.license });
+          if (_.includes(defaultofflicenses, service.id)) {
+            //如果是OP的话，默认值是1
+            licenses.push({ id: service.id, license: 1 });
+          } else {
+            //不是OP的话，则使用画面上的license设定
+            licenses.push({ id: service.id, license: Number(this.state.license) });
+          }
         });
         if (product.product === 'kaikei') licensesdata.kaikeilicenses = licenses;
         if (product.product === 'shisan') licensesdata.shisanlicenses = licenses;
@@ -812,7 +826,7 @@ const styles = StyleSheet.create(
       paddingTop: 5,
       paddingBottom: 5,
       width: 100,
-      marginLeft:10
+      marginLeft: 10
     },
     buttonContainer: {
       height: 70,

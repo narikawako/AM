@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { View, AsyncStorage, StatusBar, StyleSheet, ScrollView, Alert } from 'react-native';
 import _ from 'lodash';
 import { addItem, updateItem } from '../assets/DBAction';
-import { ACCOUNTACTION_ADD, kaikeiServices, shisanServices, kyuyoServices, jinjiServices, gakuhiServices, plusCommonServices, plusKaikeiServices, plusShisanServices, plusKyuyoServices, plusJinjiServices, plusGakuhiServices,defaultofflicenses } from '../assets/Consts';
+import { ACCOUNTACTION_ADD, kaikeiServices, shisanServices, kyuyoServices, jinjiServices, gakuhiServices, plusCommonServices, plusKaikeiServices, plusShisanServices, plusKyuyoServices, plusJinjiServices, plusGakuhiServices, defaultofflicenses } from '../assets/Consts';
 import { BasicDisplayTable, ServiceDisplayTable, WizardHeader, RemarkDisplayTable } from '../screens/ComponentUtilities';
 import { productStyles } from './CommonStyles';
 import { Timer } from './Timer';
@@ -61,43 +61,43 @@ class AccountDetailSummary extends React.Component {
               />}
             {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "kaikei") && !_.isNil(this.props.kaikeiservices) && this.props.kaikeiservices.length > 0 &&
               <ServiceDisplayTable
-                productName={"会計"}
+                productName={"学校会計"}
                 backgroundColor={productStyles.kaikeiColor}
                 services={this.prepareServicesLicenses(this.props.kaikeiservices, this.props.kaikeilicenses)}
-                offlicenses ={defaultofflicenses}
+                offlicenses={defaultofflicenses}
               />
             }
 
             {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "kyuyo") && !_.isNil(this.props.kyuyoservices) && this.props.kyuyoservices.length > 0 &&
               <ServiceDisplayTable
-                productName={"給与"}
+                productName={"学校給与"}
                 backgroundColor={productStyles.kyuyoColor}
                 services={this.prepareServicesLicenses(this.props.kyuyoservices, this.props.kyuyolicenses)}
-                offlicenses ={defaultofflicenses}
+                offlicenses={defaultofflicenses}
               />
             }
             {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "shisan") && !_.isNil(this.props.shisanservices) && this.props.shisanservices.length > 0 &&
               <ServiceDisplayTable
-                productName={"資産"}
+                productName={"資産管理"}
                 backgroundColor={productStyles.shisanColor}
                 services={this.prepareServicesLicenses(this.props.shisanservices, this.props.shisanlicenses)}
-                offlicenses ={defaultofflicenses}
+                offlicenses={defaultofflicenses}
               />
             }
             {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "gakuhi") && !_.isNil(this.props.gakuhiservices) && this.props.gakuhiservices.length > 0 &&
               <ServiceDisplayTable
-                productName={"学費"}
+                productName={"学費管理"}
                 backgroundColor={productStyles.gakuhiColor}
                 services={this.prepareServicesLicenses(this.props.gakuhiservices, this.props.gakuhilicenses)}
-                offlicenses ={defaultofflicenses}
+                offlicenses={defaultofflicenses}
               />
             }
             {!_.isNil(this.props.basic) && _.includes(this.props.basic.products, "jinji") && !_.isNil(this.props.jinjiservices) && this.props.jinjiservices.length > 0 &&
               <ServiceDisplayTable
-                productName={"人事"}
+                productName={"人事管理"}
                 backgroundColor={productStyles.jinjiColor}
                 services={this.prepareServicesLicenses(this.props.jinjiservices, this.props.jinjilicenses)}
-                offlicenses ={defaultofflicenses}
+                offlicenses={defaultofflicenses}
               />
             }
 
@@ -106,7 +106,7 @@ class AccountDetailSummary extends React.Component {
                 productName={"ﾌﾟﾗｽ"}
                 backgroundColor={productStyles.plusColor}
                 services={this.prepareServices(this.props.plus)}
-                offlicenses ={defaultofflicenses}
+                offlicenses={defaultofflicenses}
               />
             }
           </View >
@@ -183,17 +183,18 @@ class AccountDetailSummary extends React.Component {
   };
 
   //新规，编辑时，向服务端传入service数据时的预先处理。
-  _prepareServiceData = (licenses, services) => {
+  _prepareServiceData = (services, licenses) => {
     let returndata = [];
     //以service为基准遍历（service是本次要签约的所有的服务，不签约的，不会出现在这个集合里）
     _.forEach(services, (id) => {
       const index = _.findIndex(licenses, (s) => { return s.id === id; });
       if (index >= 0) {
         //如果设定了license，那么使用设定的license（这个分支是Plus以外的分支，因为可以在画面上设置License数据）
-        returndata = _.concat(returndata, { Id: licenses[index].id, License: licenses[index].License })
+        //OP在画面上不能设定，默认值是1
+        returndata = _.concat(returndata, { Id: id, License: licenses[index].license })
       } else {
         //如果没设定，那么使用默认值1（这个分支是Plus的分支，因为Plus不允许再画面上设置License数据）
-        returndata = _.concat(returndata, { Id: licenses[index].id, License: 1 })
+        returndata = _.concat(returndata, { Id: id, License: 1 })
       }
     })
     return returndata;
@@ -231,7 +232,7 @@ class AccountDetailSummary extends React.Component {
     //提交服务端用的数据
     const detail = {
       basic: this.props.basic,
-      service: _prepareServiceData(services, licenses)
+      service: this._prepareServiceData(services, licenses)
     }
 
     if (this.props.basic.action === ACCOUNTACTION_ADD) {

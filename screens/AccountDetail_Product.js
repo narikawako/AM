@@ -37,7 +37,7 @@ export default class AccountDetailProduct extends React.Component {
           services={this.state.services}   //哪些服务是Checkon的？
           licenses={this.state.licenses}   //Checkon的服务的license都各有多少？
           FixedServices={this.props.FixedServices} //当前产品共有多少个标准服务？（全集）
-          offlicenses ={defaultofflicenses} //哪些service是OP？（OP不允许设置license）
+          offlicenses={defaultofflicenses} //哪些service是OP？（OP不允许设置license）
           onChangeStatus={this._onChangeStatus}
           onChangeAllStatus={this._onChangeAllStatus}
           onChangeLicense={this._onChangeLicense}
@@ -106,7 +106,7 @@ export default class AccountDetailProduct extends React.Component {
   //默认值是全选,然后除去那些强制要Off的(前提是用户没有选择过service数据，如果选择过了，那么就以用户选择的为准)
   //都已经进入这个画面了，但是Service又是空的，那就默认按照默认来设定吧
   componentDidMount() {
-    if (_.isNil(this.state.services)) {
+    if (_.isNil(this.state.services) || _.isEmpty(this.state.services)) {
       let allFixedServices = _.map(this.props.FixedServices, 'id');
       _.remove(allFixedServices, (id) => { return _.includes(defaultOffServices, id) })
       this.setState({ services: allFixedServices });

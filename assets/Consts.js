@@ -5,16 +5,14 @@ export const kaikeiServices = [
     { id: 1, name: 'ｽﾀﾝﾀﾞｰﾄﾞ' },
     { id: 2, name: '幼稚園' },
     //{ id: 3, name: '出納帳' },
-
-    { id: 17, name: '財務分析' },
-    { id: 7, name: '配分管理' },
-    { id: 12, name: '支払管理' },
-
     { id: 5, name: '部所予算' },
     { id: 6, name: '目的予算' },
+    { id: 7, name: '配分管理' },
+    { id: 12, name: '支払管理' },
+    { id: 17, name: '財務分析' },
 
-    { id: 504010, name: '予算執行(OP)' },
-    { id: 504000, name: '他校送付(OP)' }
+    { id: 504000, name: '他校送付(OP)' },
+    { id: 504010, name: '予算執行(OP)' }
 
     //{ id: 13, name: '	税別経理	' },
     //{ id: 16, name: '	電子預金	' },
@@ -22,12 +20,10 @@ export const kaikeiServices = [
 
 export const kyuyoServices = [
     { id: 120, name: 'ｽﾀﾝﾀﾞｰﾄﾞ' },
-
-    { id: 122, name: 'ﾍﾞｰｽｱｯﾌﾟ' },
     { id: 121, name: '等級号俸' },
-    { id: 124, name: '退職金' },
-
+    { id: 122, name: 'ﾍﾞｰｽｱｯﾌﾟ' },
     { id: 123, name: '人件費ｼﾐｭﾚｰｼｮﾝ' },
+    { id: 124, name: '退職金' },
     { id: 125, name: '人事情報' },
     { id: 509004, name: '電子明細(OP)' }
 
@@ -66,8 +62,9 @@ export const plusCommonServices = [
 export const plusKaikeiServices = [
     { id: 504020, name: '	LS+会計	' },
     { id: 620000, name: '	LS+会計（Web）	' },
-    { id: 670000, name: '	LS+周辺会計（Web）	' },
-    { id: 620001, name: '	LS+仕訳アーカイブ' }
+    { id: 620001, name: '	LS+仕訳アーカイブ' },
+    { id: 670000, name: '	LS+周辺会計（Web）	' }
+
 ]
 export const plusShisanServices = [
     { id: 511003, name: '	LS+資産	' },

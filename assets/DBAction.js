@@ -169,7 +169,7 @@ export const getDetail = async (id) => {
           kaikeiservices: _.map(json.Data.KaikeiServices,'Id'),
           shisanservices: _.map(json.Data.ShisanServices,'Id'),
           kyuyoservices: _.map(json.Data.PayrollServices,'Id'),
-          JinjiServices: _.map(json.Data.JinjiServices,'Id'),
+          jinjiservices: _.map(json.Data.JinjiServices,'Id'),
           gakuhiservices: _.map(json.Data.GakuhiServices,'Id'),
           plus: _.map(json.Data.PlusServices,'Id'),
           kaikeilicenses: json.Data.KaikeiServices,
