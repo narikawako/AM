@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { loadAccountDetailAction, clearAccountDetailAction, updateAccountDetailBasicAction, updateAccountDetailServiceAction, updateAccountDetailLicenseAction } from '../actions/RootAction';
 import { getDetail, validateCode, validateName, getConfigValue } from '../assets/DBAction';
 import { bindActionCreators } from 'redux';
-import { Modal, View, TextInput, Platform, DatePickerIOS, Switch, Text, DatePickerAndroid, ActivityIndicator, StatusBar, StyleSheet, Alert, ScrollView, TouchableOpacity } from 'react-native';
+import { Modal, View, TextInput, Platform, Switch, Text, ActivityIndicator, StatusBar, StyleSheet, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import {
   ACCOUNTACTION_ADD,
   ACCOUNTACTION_EDIT,
@@ -27,6 +27,7 @@ import { WizardHeader } from './ComponentUtilities';
 import { productStyles } from './CommonStyles';
 import _ from "lodash";
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 class AccountDetailBasic extends React.Component {
   constructor(props) {
     super(props);
@@ -37,7 +38,8 @@ class AccountDetailBasic extends React.Component {
 
     this.state = {
       chosenDate: lastDay, //方便取消日付编辑（ios）
-      modalVisible: false, //方便实施日付编辑（ios）
+      iosdateshow: false, //方便实施日付编辑（ios）
+      androiddateshow: false,
       isLoading: false,
       oldname: '', //方便验证Account名是否重复
 
@@ -90,7 +92,7 @@ class AccountDetailBasic extends React.Component {
     //确定按钮：choasenDate 更新到 Date
     //返回按钮：Date 更新到 choasenDate
     let initialDate;
-    if (this.state.chosenDate === '' || this.state.chosenDate.toString() === 'Invalid Date') {
+    if (this.state.chosenDate === '' || this.state.chosenDate === undefined || this.state.chosenDate.toString() === 'Invalid Date') {
       initialDate = new Date();
     } else {
       initialDate = this.state.chosenDate;
@@ -100,24 +102,24 @@ class AccountDetailBasic extends React.Component {
         <Modal
           animationType="slide"
           transparent={true}
-          visible={this.state.modalVisible}
+          visible={this.state.iosdateshow}
           onRequestClose={() => { }}>
           <View style={styles.modalContainer}>
             <View style={styles.popupContainer}>
               <View style={styles.datePickerContainer}>
-                <DatePickerIOS
-                  date={initialDate}
+                <RNDateTimePicker
+                  value={initialDate}
                   maximumDate={this.state.maxdate}
                   mode="date"
                   locale="ja"
-                  onDateChange={(text) => this.setState({ chosenDate: text })}
+                  onChange={(event, date) => this.setState({ chosenDate: new Date(date) })}
                 />
               </View>
               <View style={styles.modalButtonContainer}>
-                <TouchableOpacity onPress={() => { this.setState({ modalVisible: false, chosenDate: this.state.date }) }} style={styles.modalButton}>
-                  <Text style={styles.modalButtonText}>キャンセル</Text>
+                <TouchableOpacity onPress={() => { this.setState({ iosdateshow: false, chosenDate: this.state.date }) }} style={styles.modalButton}>
+                  <Text style={styles.modalButtonText}>ｷｬﾝｾﾙ</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => { this.setState({ modalVisible: false, date: this.state.chosenDate }) }} style={styles.modalButton}>
+                <TouchableOpacity onPress={() => { this.setState({ iosdateshow: false, date: this.state.chosenDate }) }} style={styles.modalButton}>
                   <Text style={styles.modalButtonText}>OK</Text>
                 </TouchableOpacity>
               </View>
@@ -163,6 +165,14 @@ class AccountDetailBasic extends React.Component {
             <TouchableOpacity onPress={this._onselectDate} style={styles.dateArea}>
               <Text style={styles.dateAreaText}>{formatDate(this.state.date)}</Text>
             </TouchableOpacity>
+            {
+              this.state.androiddateshow &&
+              <RNDateTimePicker
+                value={initialDate}
+                mode="date"
+                maximumDate={this.state.maxdate}
+                onChange={(event, date) => { this.setState({ androiddateshow: false }); if (date !== undefined) this.setState({ date: date, chosenDate: date, androiddateshow: false }) }} />
+            }
           </View>
           {
             this.state.action === ACCOUNTACTION_ADD &&
@@ -502,30 +512,9 @@ class AccountDetailBasic extends React.Component {
   //选择日付
   _onselectDate = () => {
     if (Platform.OS === 'ios') {
-      this._onselectDate4iOS();
+      this.setState({ iosdateshow: true });
     } else {
-      this._onselectDate4Android();
-    }
-
-  }
-  _onselectDate4iOS = () => {
-    this.setState({ modalVisible: true });
-  }
-  _onselectDate4Android = async () => {
-    //安卓时间默认值
-    let initialDate;
-    if (this.state.date === '' || this.state.date.toString() === 'Invalid Date') {
-      initialDate = new Date();
-    } else {
-      initialDate = this.state.date;
-    }
-    const { action, year, month, day } = await DatePickerAndroid.open({
-      date: initialDate,
-      maxDate: this.state.maxdate
-    });
-    if (action !== DatePickerAndroid.dismissedAction) {
-      const returnDate = new Date(year, month, day)
-      this.setState({ date: returnDate, chosenDate: returnDate });
+      this.setState({ androiddateshow: true });
     }
   }
   //导航
